@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   sim = new Simulator();
   sim->setModel(modelo);
 
-  sim->start(100);
+  sim->start(500);
 
   return EXIT_SUCCESS;
 }

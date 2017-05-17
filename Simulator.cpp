@@ -59,8 +59,8 @@ for (int i=0;i<model->getNumOutputs();++i)    //creation of each element of outp
       model->ModelOutputs();
         
         
-        if ((j%100)==0) {
-            cout  << globalTime << "%" << endl;
+        if ((j%5)==0) {
+            cout  << globalTime/5 << "%" << endl;
         }
         
       
@@ -96,7 +96,7 @@ for (int i=0;i<model->getNumOutputs();++i)    //creation of each element of outp
 Simulator::Simulator( )
 {
   globalTime = 0;
-  DT = 0.01;
+  DT = 1;
   outputList = new OutputDataList();
   simMeth = new SimMeth (euler); // TO-DO: Create one instance of this class for each GPU
 
