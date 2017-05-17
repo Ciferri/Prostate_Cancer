@@ -143,7 +143,7 @@ void prostateCell::RateConstants(ParamVect *variables)
 
 double prostateCell::getST_X()
 {
-  return IN_PO2;
+  return OUT_CONS_O2;
 }
 
 
