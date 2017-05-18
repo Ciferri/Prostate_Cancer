@@ -32,8 +32,10 @@
 class Gen3DProstTissue : public Model {
  public:
   Gen3DProstTissue();
-  Gen3DProstTissue(std::string nFInPO2, std::string nFInTum,
-		   std::string nFInVes, Treatment *treatment);
+  Gen3DProstTissue(const std::string nFInPO2,
+		   const std::string nFInTum,
+		   const std::string nFInVes,
+		   Treatment *const treatment);
   ~Gen3DProstTissue();
   virtual int ModelInit(const double DT);
   virtual int ModelOut();

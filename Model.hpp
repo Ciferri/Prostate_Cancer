@@ -20,8 +20,8 @@ enum modelType {DEVS,DESS,DTSS};
 
 class Model {
 public :
-  Model(modelType type, int numIn, int numSt, int numOut,
-	int numParam, int numComp);
+  Model(const modelType type, const int numIn, const int numSt,
+	const int numOut, const int numParam, const int numComp);
   virtual ~Model(); 
   virtual int ModelInit(const double DT=0)=0;
   virtual int ModelOut()=0;

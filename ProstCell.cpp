@@ -42,7 +42,8 @@ ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 11, 0){
 }
 
 
-ProstCell::ProstCell(Model *parent) : Model(DESS, 6, 8, 1, 11, 0){
+ProstCell::ProstCell(Model *const parent) :
+  Model(DESS, 6, 8, 1, 11, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD = 0.0;
   ST_TUMOR = 0.0;		
@@ -235,7 +236,7 @@ int ProstCell::ModelUpdate(const double currentTime,
 }
 
 
-void ProstCell::AddToEdge(ProstCell *cell){
+void ProstCell::AddToEdge(ProstCell *const cell){
   m_edge->push_back(cell);
 }
 

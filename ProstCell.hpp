@@ -50,7 +50,7 @@
 class ProstCell: public Model{
 public :
   ProstCell();
-  ProstCell(Model *parent);
+  ProstCell(Model *const parent);
   virtual ~ProstCell();
   virtual int ModelInit(const double DT);
   virtual int ModelOut();
@@ -58,7 +58,7 @@ public :
   virtual int ModelTerminate();
   virtual int ModelUpdate(const double currentTime,
 			  const double DT);
-  void AddToEdge(ProstCell *cell);
+  void AddToEdge(ProstCell *const cell);
   double CalcOER() const;
   double CalcSF() const;
   double getAlive() const;

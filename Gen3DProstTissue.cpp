@@ -38,15 +38,16 @@ Gen3DProstTissue::Gen3DProstTissue() :
 }
 
 
-Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
-				   string nFInVes,
-				   Treatment *treatment) :
+Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
+				   const string nFInTum,
+				   const string nFInVes,
+				   Treatment *const treatment) :
   Model(DESS, 0, 0, 0, 0, TISSUEROW*TISSUECOL*TISSUELAYER){
   int k(0);
   int selInitPhase;
   double doubTime, input;
 
-  m_treatment=treatment;
+  m_treatment = treatment;
   
   //Creation of the cells composing the tissue model
   for(int i=0;i<TISSUEROW;i++){
