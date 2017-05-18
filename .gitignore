@@ -1,2 +1,8 @@
-!*.cpp
-!*.hpp
+CMakeFiles/
+build/
+*~
+*.dat
+*.o
+*.m
+*.png
+tt
