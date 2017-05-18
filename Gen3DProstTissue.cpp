@@ -29,7 +29,7 @@ Gen3DProstTissue::Gen3DProstTissue() :
       for(int l=0;l<TISSUELAYER;l++){
 	m_comp->at(k) = new ProstCell(this);
 	m_tissue[i][j][l] = m_comp->at(k);
-	m_comp->at(k)->ModelOut();
+	m_comp->at(k)->calcModelOut();
 	m_numOut += (m_comp->at(k))->getNumOut();
 	k++;
       }
@@ -55,7 +55,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
       for(int l=0;l<TISSUELAYER;l++){
 	m_comp->at(k) = new ProstCell(this);
     	m_tissue[i][j][l] = m_comp->at(k);
-	m_comp->at(k)->ModelOut();
+	m_comp->at(k)->calcModelOut();
 	m_numOut += (m_comp->at(k))->getNumOut();
 
 	k++;
@@ -73,7 +73,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
 		if(i+ii>=0 && j+jj>=0 && l+ll>=0 && i+ii<TISSUEROW
 		   && j+jj<TISSUECOL && l+ll<TISSUELAYER){
 		  ((ProstCell *)m_tissue[i][j][l])
-		    ->AddToEdge(((ProstCell *)m_tissue[i+ii]
+		    ->addToEdge(((ProstCell *)m_tissue[i+ii]
 				 [j+jj][l+ll]));
 		}
 	      }
@@ -90,7 +90,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
   if(fInPO2.is_open()){
     while(fInPO2>>input){
       ((ProstCell *)m_comp->at(k))->setInPO2(input);
-      (m_comp->at(k))->ModelInit();
+      (m_comp->at(k))->initModel();
       k++;
     }
     fInPO2.close();
@@ -106,7 +106,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
   if(fInTum.is_open()){
     while(fInTum>>input){
       ((ProstCell *)m_comp->at(k))->setInTumor(input);
-      (m_comp->at(k))->ModelInit();
+      (m_comp->at(k))->initModel();
       k++;
     }
     fInTum.close();
@@ -124,7 +124,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
     if(fInVes.is_open()){
       while(fInVes>>input){
 	((ProstCell *)m_comp->at(k))->setInVes(input);
-	(m_comp->at(k))->ModelInit();
+	(m_comp->at(k))->initModel();
 	k++;
       }
       fInVes.close();
@@ -153,7 +153,7 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
       input = (int)(0.9*doubTime) + rand()%(int)(0.1*doubTime);
     }
     ((ProstCell *)m_comp->at(k))->setInTimer(input);
-    (m_comp->at(k))->ModelInit();
+    (m_comp->at(k))->initModel();
   }
 }
 
@@ -162,7 +162,15 @@ Gen3DProstTissue::~Gen3DProstTissue(){
 }
 
 
-int Gen3DProstTissue::ModelInit(const double DT){
+int Gen3DProstTissue::calcModelOut(){
+  for(int k=0;k<m_numComp;k++){
+    (m_comp->at(k))->calcModelOut();
+  }
+  return 0;
+}
+
+
+int Gen3DProstTissue::initModel(const double DT){
   cout<<"Total number of cells = "<<m_numComp<<endl;
   cout<<"Initial number of cells at G1 = "<<getNumG1()<<endl;
   cout<<"Initial number of cells at S = "<<getNumS()<<endl;
@@ -177,26 +185,18 @@ int Gen3DProstTissue::ModelInit(const double DT){
 }
 
 
-int Gen3DProstTissue::ModelOut(){
-  for(int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelOut();
-  }
-  return 0;
-}
-
-
 //It does nothing for the moment
-int Gen3DProstTissue::ModelStart(){
+int Gen3DProstTissue::startModel(){
   for (int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelStart();
+    (m_comp->at(k))->startModel();
   }
   return 0;
 }
 
 
-int Gen3DProstTissue::ModelTerminate(){
+int Gen3DProstTissue::terminateModel(){
   for(int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelTerminate();
+    (m_comp->at(k))->terminateModel();
   }
  
   cout<<"Final number of cells at G1 = "<<getNumG1()<<endl;
@@ -212,11 +212,11 @@ int Gen3DProstTissue::ModelTerminate(){
 }
 
 
-int Gen3DProstTissue::ModelUpdate(const double currentTime,
+int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
   for(int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelUpdate(currentTime, DT);
-    (m_comp->at(k))->ModelOut();
+    (m_comp->at(k))->updateModel(currentTime, DT);
+    (m_comp->at(k))->calcModelOut();
   }
   return 0;
 }

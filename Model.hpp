@@ -22,13 +22,13 @@ class Model {
 public :
   Model(const modelType type, const int numIn, const int numSt,
 	const int numOut, const int numParam, const int numComp);
-  virtual ~Model(); 
-  virtual int ModelInit(const double DT=0)=0;
-  virtual int ModelOut()=0;
-  virtual int ModelUpdate(const double currentTime=0,
+  virtual ~Model();
+  virtual int calcModelOut()=0;
+  virtual int initModel(const double DT=0)=0;
+  virtual int updateModel(const double currentTime=0,
 			  const double DT=0)=0;
-  virtual int ModelTerminate();
-  virtual int ModelStart();
+  virtual int terminateModel();
+  virtual int startModel();
   DoubleVect *getIn() const;
   DoubleVect *getSt() const;
   DoubleVect *getDerivSt() const;

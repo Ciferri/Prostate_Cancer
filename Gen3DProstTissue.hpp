@@ -37,11 +37,11 @@ class Gen3DProstTissue : public Model {
 		   const std::string nFInVes,
 		   Treatment *const treatment);
   ~Gen3DProstTissue();
-  virtual int ModelInit(const double DT);
-  virtual int ModelOut();
-  virtual int ModelStart();
-  virtual int ModelTerminate();
-  virtual int ModelUpdate(const double currentTime,
+  virtual int calcModelOut();
+  virtual int initModel(const double DT);
+  virtual int startModel();
+  virtual int terminateModel();
+  virtual int updateModel(const double currentTime,
 			  const double DT);
   int getNumAlive() const;
   int getNumDead() const;

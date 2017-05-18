@@ -1,5 +1,5 @@
 /*
- *  prostCell.hpp
+ *  ProstCell.hpp
  *
  *  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
  * 	03.23.2017
@@ -52,15 +52,15 @@ public :
   ProstCell();
   ProstCell(Model *const parent);
   virtual ~ProstCell();
-  virtual int ModelInit(const double DT);
-  virtual int ModelOut();
-  virtual int ModelStart();
-  virtual int ModelTerminate();
-  virtual int ModelUpdate(const double currentTime,
+  virtual int calcModelOut();
+  virtual int initModel(const double DT);
+  virtual int startModel();
+  virtual int terminateModel();
+  virtual int updateModel(const double currentTime,
 			  const double DT);
-  void AddToEdge(ProstCell *const cell);
-  double CalcOER() const;
-  double CalcSF() const;
+  void addToEdge(ProstCell *const cell);
+  double calcOER() const;
+  double calcSF() const;
   double getAlive() const;
   double getDead() const;
   double getDeadTime() const;
@@ -73,7 +73,7 @@ public :
   double getS() const;
   double getTumor() const;
   double getVes() const;
-  ProstCell *SearchSpace() const;
+  ProstCell *searchSpace() const;
   void setInAlive(const double input);
   void setInDead(const double input);
   void setInPO2(const double input);

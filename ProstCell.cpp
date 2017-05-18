@@ -1,5 +1,5 @@
 /*
- *  prostCell.cpp
+ *  ProstCell.cpp
  *
  *  Copyright (c) 2001 INSERM. All rights reserved.
  *	03.23.2017
@@ -75,7 +75,13 @@ ProstCell::~ProstCell(){
 }
 
 
-int ProstCell::ModelInit(const double DT){
+int ProstCell::calcModelOut(){
+  OUT_STATE = ST_ALIVE + 2*ST_TUMOR + 3*ST_VES + 4*ST_DEAD;	    
+  return 0;
+}
+
+
+int ProstCell::initModel(const double DT){
   ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_DEAD &&
     !IN_VES;   
   ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !ST_ALIVE && !IN_DEAD;
@@ -130,23 +136,17 @@ int ProstCell::ModelInit(const double DT){
 }
 
 
-int ProstCell::ModelOut(){
-  OUT_STATE = ST_ALIVE + 2*ST_TUMOR + 3*ST_VES + 4*ST_DEAD;	    
+int ProstCell::startModel(){
   return 0;
 }
 
 
-int ProstCell::ModelStart(){
+int ProstCell::terminateModel(){
   return 0;
 }
 
 
-int ProstCell::ModelTerminate(){
-  return 0;
-}
-
-
-int ProstCell::ModelUpdate(const double currentTime,
+int ProstCell::updateModel(const double currentTime,
 			   const double DT){
   int i;
   double p;
@@ -206,7 +206,7 @@ int ProstCell::ModelUpdate(const double currentTime,
   if(PAR_TIMER>=PAR_DOUBTIME){
     PAR_TIMER = 0;
     if(ST_TUMOR && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
-      newTumorCell = SearchSpace();
+      newTumorCell = searchSpace();
       if(newTumorCell){
 	newTumorCell->setInTumor(1.0);
 	newTumorCell->PAR_TIMER = 0;
@@ -220,7 +220,7 @@ int ProstCell::ModelUpdate(const double currentTime,
       i = currentTime/m_treatment->getInterval();
       if((m_treatment->getSchedule()).at(i)){
 	p = (double)rand()/(double)(RAND_MAX);
-	if(CalcSF()<p){
+	if(calcSF()<p){
 	  setInDead (1.0);
 	  PAR_TIMER = 0;
 	}
@@ -236,12 +236,12 @@ int ProstCell::ModelUpdate(const double currentTime,
 }
 
 
-void ProstCell::AddToEdge(ProstCell *const cell){
+void ProstCell::addToEdge(ProstCell *const cell){
   m_edge->push_back(cell);
 }
 
 
-double ProstCell::CalcOER() const{
+double ProstCell::calcOER() const{
   double OER;
   
   OER = (PAR_M * PAR_PO2 + PAR_K)/(PAR_PO2 + PAR_K); //mmHg
@@ -249,13 +249,13 @@ double ProstCell::CalcOER() const{
 }
 
 
-double ProstCell::CalcSF() const{
+double ProstCell::calcSF() const{
   double fraction, SF;
   
   fraction = m_treatment->getFraction();
-  SF = exp(-PAR_ALPHA/PAR_M * fraction * CalcOER() -
+  SF = exp(-PAR_ALPHA/PAR_M * fraction * calcOER() -
 	   PAR_BETA/(PAR_M*PAR_M) * fraction*fraction *
-	   CalcOER()*CalcOER());
+	   calcOER()*calcOER());
   return SF;
 }
 
@@ -320,7 +320,7 @@ double ProstCell::getVes() const{
 }
 
 
-ProstCell *ProstCell::SearchSpace() const{
+ProstCell *ProstCell::searchSpace() const{
   int edgeSize, m;
   
   edgeSize = m_edge->size();
@@ -337,7 +337,7 @@ ProstCell *ProstCell::SearchSpace() const{
   
   for(int n=0;n<edgeSize;n++){
     if(((ProstCell *)m_edge->at(m))->ST_TUMOR){
-      return ((ProstCell *)m_edge->at(m))->SearchSpace();
+      return ((ProstCell *)m_edge->at(m))->searchSpace();
     }
     m++;
     if(m==edgeSize){

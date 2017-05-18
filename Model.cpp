@@ -42,12 +42,12 @@ Model::~Model(){
 }
 
 
-int Model::ModelTerminate(){
+int Model::terminateModel(){
   return 0;
 }
 
 
-int Model::ModelStart(){
+int Model::startModel(){
   return 0;
 }
 
