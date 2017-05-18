@@ -23,9 +23,10 @@ public :
   Model(modelType type, int numIn, int numSt, int numOut,
 	int numParam, int numComp);
   virtual ~Model(); 
-  virtual int ModelInit(double DT=0)=0;
+  virtual int ModelInit(const double DT=0)=0;
   virtual int ModelOut()=0;
-  virtual int ModelUpdate(double currentTime=0, double DT=0)=0;
+  virtual int ModelUpdate(const double currentTime=0,
+			  const double DT=0)=0;
   virtual int ModelTerminate();
   virtual int ModelStart();
   DoubleVect *getIn() const;

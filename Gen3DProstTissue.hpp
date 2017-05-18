@@ -35,11 +35,12 @@ class Gen3DProstTissue : public Model {
   Gen3DProstTissue(std::string nFInPO2, std::string nFInTum,
 		   std::string nFInVes, Treatment *treatment);
   ~Gen3DProstTissue();
-  virtual int ModelInit(double DT);
+  virtual int ModelInit(const double DT);
   virtual int ModelOut();
   virtual int ModelStart();
   virtual int ModelTerminate();
-  virtual int ModelUpdate(double currentTime, double DT);
+  virtual int ModelUpdate(const double currentTime,
+			  const double DT);
   int getNumAlive() const;
   int getNumDead() const;
   int getNumG1() const;
@@ -49,8 +50,6 @@ class Gen3DProstTissue : public Model {
   int getNumTumor() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
-  int *kToXYZ(int k) const;
-  int XYZTok(int x, int y, int z) const;
 
 protected:
   Model *m_tissue[TISSUEROW][TISSUECOL][TISSUELAYER];

@@ -18,27 +18,23 @@ using namespace std;
 
 Gen3DProstTissue::Gen3DProstTissue() :
   Model(DESS, 0, 0, 0, 0, TISSUEROW*TISSUECOL*TISSUELAYER){
-  int k;
+  int k(0);
   double input;
-  
-  //Creation of the cells composing the tissue model
-  for(int k=0;k<m_numComp;k++){
-    m_comp->at(k) = new ProstCell(this);
-    m_comp->at(k)->ModelOut();
-    m_numOut += (m_comp->at(k))->getNumOut();
-  }
 
-  k = 0;
+  m_treatment = 0;
+    
+  //Creation of the cells composing the tissue model
   for(int i=0;i<TISSUEROW;i++){
     for(int j=0;j<TISSUECOL;j++){
       for(int l=0;l<TISSUELAYER;l++){
+	m_comp->at(k) = new ProstCell(this);
 	m_tissue[i][j][l] = m_comp->at(k);
+	m_comp->at(k)->ModelOut();
+	m_numOut += (m_comp->at(k))->getNumOut();
 	k++;
-	
       }
     }
   }
-  m_treatment = 0;
 }
 
 
@@ -46,27 +42,26 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
 				   string nFInVes,
 				   Treatment *treatment) :
   Model(DESS, 0, 0, 0, 0, TISSUEROW*TISSUECOL*TISSUELAYER){
-  int k;
+  int k(0);
   int selInitPhase;
   double doubTime, input;
 
   m_treatment=treatment;
+  
   //Creation of the cells composing the tissue model
-  for(k=0;k<m_numComp;k++){
-    m_comp->at(k) = new ProstCell(this);
-    m_comp->at(k)->ModelOut();
-    m_numOut += (m_comp->at(k))->getNumOut();
-  }
-  k = 0;
   for(int i=0;i<TISSUEROW;i++){
     for(int j=0;j<TISSUECOL;j++){
       for(int l=0;l<TISSUELAYER;l++){
-	m_tissue[i][j][l] = m_comp->at(k);
+	m_comp->at(k) = new ProstCell(this);
+    	m_tissue[i][j][l] = m_comp->at(k);
+	m_comp->at(k)->ModelOut();
+	m_numOut += (m_comp->at(k))->getNumOut();
+
 	k++;
       }
     }
   }
-  k = 0;
+
   for(int i=0;i<TISSUEROW;i++){
     for(int j=0;j<TISSUECOL;j++){
       for(int l=0;l<TISSUELAYER;l++){
@@ -83,8 +78,7 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
 	      }
 	    }
 	  }
-	}
-	k++;
+	}   
       }
     }
   }
@@ -96,7 +90,6 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
     while(fInPO2>>input){
       ((ProstCell *)m_comp->at(k))->setInPO2(input);
       (m_comp->at(k))->ModelInit();
-      ((ProstCell *)m_comp->at(k))->setInPO2(0.0);
       k++;
     }
     fInPO2.close();
@@ -113,7 +106,6 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
     while(fInTum>>input){
       ((ProstCell *)m_comp->at(k))->setInTumor(input);
       (m_comp->at(k))->ModelInit();
-      ((ProstCell *)m_comp->at(k))->setInTumor(0.0);
       k++;
     }
     fInTum.close();
@@ -132,7 +124,6 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
       while(fInVes>>input){
 	((ProstCell *)m_comp->at(k))->setInVes(input);
 	(m_comp->at(k))->ModelInit();
-	((ProstCell *)m_comp->at(k))->setInVes(0.0);
 	k++;
       }
       fInVes.close();
@@ -170,7 +161,7 @@ Gen3DProstTissue::~Gen3DProstTissue(){
 }
 
 
-int Gen3DProstTissue::ModelInit(double DT){
+int Gen3DProstTissue::ModelInit(const double DT){
   cout<<"Total number of cells = "<<m_numComp<<endl;
   cout<<"Initial number of cells at G1 = "<<getNumG1()<<endl;
   cout<<"Initial number of cells at S = "<<getNumS()<<endl;
@@ -220,7 +211,8 @@ int Gen3DProstTissue::ModelTerminate(){
 }
 
 
-int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
+int Gen3DProstTissue::ModelUpdate(const double currentTime,
+				  const double DT){
   for(int k=0;k<m_numComp;k++){
     (m_comp->at(k))->ModelUpdate(currentTime, DT);
     (m_comp->at(k))->ModelOut();
@@ -322,31 +314,6 @@ Treatment *Gen3DProstTissue::getTreatment() const{
 }
 
 
-int *Gen3DProstTissue::kToXYZ(int k) const{
-  int *tab= new int[3];
-  if(k>-1 && k<TISSUEROW*TISSUECOL*TISSUELAYER){
-    tab[0] = (k%(TISSUEROW*TISSUECOL))/TISSUECOL;
-    tab[1] = (k%(TISSUEROW*TISSUECOL))%TISSUECOL;
-    tab[2] = k/(TISSUEROW*TISSUECOL);
-  }
-  else{
-    tab[0] = -1;
-    tab[1] = -1;
-    tab[2] = -1;
-  }
-  return tab;
-}
-
-
-int Gen3DProstTissue::XYZTok(int x, int y, int z) const{
-  if(x>-1 && x<TISSUEROW && y>-1 && y<TISSUECOL && z>-1 &&
-     z<TISSUELAYER){
-    return x*TISSUECOL + y + z*TISSUEROW*TISSUECOL;
-  }
-  else{
-    return -1;
-  }
-}
 
 
 

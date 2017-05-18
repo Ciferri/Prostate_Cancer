@@ -41,6 +41,7 @@ ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 11, 0){
   m_treatment = 0;
 }
 
+
 ProstCell::ProstCell(Model *parent) : Model(DESS, 6, 8, 1, 11, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD = 0.0;
@@ -73,19 +74,22 @@ ProstCell::~ProstCell(){
 }
 
 
-int ProstCell::ModelInit(double DT){
-  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_VES;   
-  ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !IN_DEAD;
-  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_VES;
-  ST_VES = ST_VES || IN_VES;
-  
-  PAR_PO2 = IN_PO2;
+int ProstCell::ModelInit(const double DT){
+  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_DEAD &&
+    !IN_VES;   
+  ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !ST_ALIVE && !IN_DEAD;
+  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUMOR;
+  ST_VES = (ST_VES || IN_VES) && !IN_DEAD;
+  setInTumor(0.0);
+  setInDead(0.0);
+  setInVes(0.0);
   
   PAR_TIMER = IN_TIMER;
-  ST_G1 = 0<=PAR_TIMER && PAR_TIMER<PAR_LIMG1S;
-  ST_S = PAR_LIMG1S<=PAR_TIMER && PAR_TIMER<PAR_LIMSG2;
-  ST_G2 = PAR_LIMSG2<=PAR_TIMER && PAR_TIMER<PAR_LIMG2M;
-  ST_M = PAR_LIMG2M<=PAR_TIMER && PAR_TIMER<=PAR_DOUBTIME; 
+  ST_G1 = !ST_DEAD && 0<=PAR_TIMER && PAR_TIMER<PAR_LIMG1S;
+  ST_S = !ST_DEAD && PAR_LIMG1S<=PAR_TIMER && PAR_TIMER<PAR_LIMSG2;
+  ST_G2 = !ST_DEAD && PAR_LIMSG2<=PAR_TIMER && PAR_TIMER<PAR_LIMG2M;
+  ST_M = !ST_DEAD && PAR_LIMG2M<=PAR_TIMER &&
+    PAR_TIMER<=PAR_DOUBTIME; 
 
   if(ST_ALIVE){
     PAR_ALPHA = 0;
@@ -117,6 +121,10 @@ int ProstCell::ModelInit(double DT){
       PAR_BETA = 0.063;
     }
   }
+
+  PAR_PO2 = IN_PO2;
+  setInPO2(0.0);
+  
   return 0;
 }
 
@@ -137,7 +145,8 @@ int ProstCell::ModelTerminate(){
 }
 
 
-int ProstCell::ModelUpdate(double currentTime, double DT){
+int ProstCell::ModelUpdate(const double currentTime,
+			   const double DT){
   int i;
   double p;
   ProstCell *newTumorCell = 0;
@@ -157,9 +166,6 @@ int ProstCell::ModelUpdate(double currentTime, double DT){
   ST_G2 = !ST_DEAD && PAR_LIMSG2<=PAR_TIMER && PAR_TIMER<PAR_LIMG2M;
   ST_M = !ST_DEAD && PAR_LIMG2M<=PAR_TIMER &&
     PAR_TIMER<=PAR_DOUBTIME;
-
-  PAR_PO2 = IN_PO2;
-  setInPO2(0.0);
     
   if(ST_ALIVE){
     PAR_ALPHA = 0;
@@ -191,6 +197,9 @@ int ProstCell::ModelUpdate(double currentTime, double DT){
       PAR_BETA = 0.063;
     }
   }
+
+  PAR_PO2 = IN_PO2;
+  setInPO2(0.0);
   
   //Tumor growth
   if(PAR_TIMER>=PAR_DOUBTIME){
@@ -241,6 +250,7 @@ double ProstCell::CalcOER() const{
 
 double ProstCell::CalcSF() const{
   double fraction, SF;
+  
   fraction = m_treatment->getFraction();
   SF = exp(-PAR_ALPHA/PAR_M * fraction * CalcOER() -
 	   PAR_BETA/(PAR_M*PAR_M) * fraction*fraction *
@@ -323,6 +333,7 @@ ProstCell *ProstCell::SearchSpace() const{
       m=0;
     }
   }
+  
   for(int n=0;n<edgeSize;n++){
     if(((ProstCell *)m_edge->at(m))->ST_TUMOR){
       return ((ProstCell *)m_edge->at(m))->SearchSpace();
@@ -336,33 +347,33 @@ ProstCell *ProstCell::SearchSpace() const{
 }
 
 
-void ProstCell::setInAlive(double input){
+void ProstCell::setInAlive(const double input){
   IN_ALIVE = input;
 }
 
 
-void ProstCell::setInDead(double input){
+void ProstCell::setInDead(const double input){
   IN_DEAD = input;
 }
 
 
-void ProstCell::setInPO2(double input){
+void ProstCell::setInPO2(const double input){
   IN_PO2 = input;
   
 }
 
 
-void ProstCell::setInTimer(double input){
+void ProstCell::setInTimer(const double input){
   IN_TIMER = input;
 }
 
 
-void ProstCell::setInTumor(double input){
+void ProstCell::setInTumor(const double input){
   IN_TUMOR = input;
 }
 
 
-void ProstCell::setInVes(double input){
+void ProstCell::setInVes(const double input){
   IN_VES = input;
 }
 

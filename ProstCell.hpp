@@ -52,11 +52,12 @@ public :
   ProstCell();
   ProstCell(Model *parent);
   virtual ~ProstCell();
-  virtual int ModelInit(double DT);
+  virtual int ModelInit(const double DT);
   virtual int ModelOut();
   virtual int ModelStart();
   virtual int ModelTerminate();
-  virtual int ModelUpdate(double currentTime, double DT);
+  virtual int ModelUpdate(const double currentTime,
+			  const double DT);
   void AddToEdge(ProstCell *cell);
   double CalcOER() const;
   double CalcSF() const;
@@ -73,12 +74,12 @@ public :
   double getTumor() const;
   double getVes() const;
   ProstCell *SearchSpace() const;
-  void setInAlive(double input);
-  void setInDead(double input);
-  void setInPO2(double input);
-  void setInTimer(double input);
-  void setInTumor(double input);
-  void setInVes(double input);
+  void setInAlive(const double input);
+  void setInDead(const double input);
+  void setInPO2(const double input);
+  void setInTimer(const double input);
+  void setInTumor(const double input);
+  void setInVes(const double input);
 
 protected:
   std::vector<ProstCell*> *m_edge;
