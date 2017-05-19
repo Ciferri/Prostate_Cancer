@@ -1,0 +1,13 @@
+CMakeFiles/
+build/
+*~
+*.dat
+*.o
+*.m
+*.png
+*.txt
+cmake_install.cmake
+m2slv01
+Makefile
+octave-workspace
+tt
