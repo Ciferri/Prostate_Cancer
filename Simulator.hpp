@@ -22,11 +22,12 @@ typedef std::vector<OutputData *> OutputDataList;
 class Simulator{	
 public:
   Simulator();
-  Simulator(Model *model, double currentTime, double DT);
+  Simulator(Model *model, const double currentTime,
+	    const double DT);
   ~Simulator();
   void setModel(Model *model);
   //void simulate( double currentTime, double DT );
-  void start(double duration);
+  void start(const double simTime);
   void stop();
   
 private:

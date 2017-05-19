@@ -22,7 +22,8 @@ Simulator::Simulator(){
 }
 
 
-Simulator::Simulator (Model* model, double currentTime, double DT){
+Simulator::Simulator (Model* model, const double currentTime,
+		      const double DT){
   m_model = model;
   m_currentTime = currentTime;
   m_DT = DT;
@@ -47,7 +48,7 @@ void Simulator::stop(){
 }
 
 
-void Simulator::start(double simTime){
+void Simulator::start(const double simTime){
   int index(0);
   int toto(0);
   //Creation of each element of outList
