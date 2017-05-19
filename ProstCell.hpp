@@ -1,9 +1,9 @@
-/*
- *  prostCell.hpp
- *
- *  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
- * 	03.23.2017
- *
+/**
+ * @file ProstCell.hpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #ifndef DEF_PROSTCELL
@@ -41,15 +41,16 @@
 class ProstCell: public Model{
 public :
   ProstCell();
-  ProstCell(Model *parent);
+  ProstCell(Model *const parent);
   virtual ~ProstCell();
-  virtual int ModelInitSim(double DT);
-  virtual int ModelOut();
-  virtual int ModelStart();
-  virtual int ModelTerminate();
-  virtual int ModelUpdate(double currentTime, double DT);
-  double CalcOER() const;
-  double CalcSF() const;
+  virtual int calcModelOut();
+  virtual int initModel(const double DT);
+  virtual int startModel();
+  virtual int terminateModel();
+  virtual int updateModel(const double currentTime,
+			  const double DT);
+  double calcOER() const;
+  double calcSF() const;
   double getAlive() const;
   double getDead() const;
   double getDeadTime() const;
@@ -58,10 +59,10 @@ public :
   int getOutState() const;
   double getTumor() const;
   double getVes() const;
-  void setInAlive(double input);
-  void setInDead(double input);
-  void setInPO2(double input);
-  void setInTumor(double input);
-  void setInVes(double input);
+  void setInAlive(const double input);
+  void setInDead(const double input);
+  void setInPO2(const double input);
+  void setInTumor(const double input);
+  void setInVes(const double input);
 };
 #endif

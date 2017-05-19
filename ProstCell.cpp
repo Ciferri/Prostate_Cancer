@@ -1,8 +1,9 @@
-/*
- *  prostCell.cpp
- *
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *	03.23.2017
+/**
+ * @file ProstCell.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #include "ProstCell.hpp"
@@ -28,7 +29,8 @@ ProstCell::ProstCell() : Model(DESS, 5, 4, 1, 8, 0){
   m_parent = 0;
 }
 
-ProstCell::ProstCell(Model *parent) : Model(DESS, 5, 4, 1, 8, 0){
+ProstCell::ProstCell(Model *const parent) :
+  Model(DESS, 5, 4, 1, 8, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD = 0.0;
   ST_TUMOR = 0.0;		
@@ -48,28 +50,29 @@ ProstCell::~ProstCell(){
 }
 
 
-int ProstCell::ModelInitSim(double DT){	
-  return 0;
-}
-
-
-int ProstCell::ModelOut(){
+int ProstCell::calcModelOut(){
   OUT_STATE = ST_ALIVE + 2*ST_TUMOR + 3*ST_VES + 4*ST_DEAD;	    
   return 0;
 }
 
 
-int ProstCell::ModelStart(){
+int ProstCell::initModel(const double DT){	
   return 0;
 }
 
 
-int ProstCell::ModelTerminate(){
+int ProstCell::startModel(){
   return 0;
 }
 
 
-int ProstCell::ModelUpdate(double currentTime, double DT){
+int ProstCell::terminateModel(){
+  return 0;
+}
+
+
+int ProstCell::updateModel(const double currentTime,
+			   const double DT){
   ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_VES;   
   ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !IN_DEAD;
   ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_VES;
@@ -97,7 +100,7 @@ int ProstCell::ModelUpdate(double currentTime, double DT){
 }
 
 
-double ProstCell::CalcOER() const{
+double ProstCell::calcOER() const{
   double OER;
   
   OER = (PAR_M * PAR_PO2 + PAR_K)/(PAR_PO2 + PAR_K); //mmHg
@@ -105,13 +108,14 @@ double ProstCell::CalcOER() const{
 }
 
 
-double ProstCell::CalcSF() const{
+double ProstCell::calcSF() const{
   double fraction, SF;
+  
   fraction = ((Gen3DProstTissue *)m_parent)->getTreatment()->
     getFraction();
-  SF = exp(-PAR_ALPHA/PAR_M * fraction * CalcOER() -
+  SF = exp(-PAR_ALPHA/PAR_M * fraction * calcOER() -
 	   PAR_BETA/(PAR_M*PAR_M) * fraction*fraction *
-	   CalcOER()*CalcOER());
+	   calcOER()*calcOER());
   return SF;
 }
 
@@ -151,28 +155,28 @@ double ProstCell::getVes() const{
 }
 
 
-void ProstCell::setInAlive(double input){
+void ProstCell::setInAlive(const double input){
   IN_ALIVE = input;
 }
 
 
-void ProstCell::setInDead(double input){
+void ProstCell::setInDead(const double input){
   IN_DEAD = input;
 }
 
 
-void ProstCell::setInPO2(double input){
+void ProstCell::setInPO2(const double input){
   IN_PO2 = input;
   
 }
 
 
-void ProstCell::setInTumor(double input){
+void ProstCell::setInTumor(const double input){
   IN_TUMOR = input;
 }
 
 
-void ProstCell::setInVes(double input){
+void ProstCell::setInVes(const double input){
   IN_VES = input;
 }
 

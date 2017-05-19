@@ -1,13 +1,22 @@
+/**
+ * @file Treatment.hpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
+
 #ifndef DEF_Treatment
 #define DEF_Treatment
 
+#include <iostream>
 #include <vector>
 
 class Treatment{
 public:
   Treatment();
-  Treatment(double fraction, double totalDose, double interval,
-	    std::vector<bool> schedule);
+  Treatment(const double fraction, const double totalDose,
+	    const double interval,
+	    const std::vector<bool> schedule);
   double getDuration() const;
   double getFraction() const;
   double getInterval() const;

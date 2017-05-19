@@ -1,5 +1,13 @@
+/**
+ * @file Treatment.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
+
 #include <iostream>
 #include <vector>
+
 #include "Treatment.hpp"
 
 using namespace std;
@@ -7,7 +15,7 @@ using namespace std;
 Treatment::Treatment(){
   m_fraction = 2.0; //Gy
   m_interval = 24; //s
-  m_totalDose = 60.0; //Gy
+  m_totalDose = 80.0; //Gy
 
   //Sessions scheduled Mon-Fri
   int accSession(0), i(0), numSession;
@@ -25,8 +33,9 @@ Treatment::Treatment(){
 }
 
 
-Treatment::Treatment(double fraction, double totalDose,
-		     double interval, vector<bool> schedule){
+Treatment::Treatment(const double fraction, const double totalDose,
+		     const double interval,
+		     const vector<bool> schedule){
   m_fraction = fraction;
   m_interval = interval;
   m_totalDose = totalDose;
@@ -52,6 +61,7 @@ double Treatment::getInterval() const{
 vector<bool> Treatment::getSchedule() const{
   return m_schedule;
 }
+
 
 double Treatment::getTotalDose() const{
   return m_totalDose;

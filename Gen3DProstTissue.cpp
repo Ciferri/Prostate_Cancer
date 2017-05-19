@@ -1,8 +1,9 @@
-/*
- *  generic3dtissueProstate.cpp
- *
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file Gen3DProstTissue.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #include <iostream>
@@ -38,9 +39,10 @@ Gen3DProstTissue::Gen3DProstTissue() :
 }
 
 
-Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
-				   string nFInVes,
-				   Treatment *treatment) :
+Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
+				   const string nFInTum,
+				   const string nFInVes,
+				   Treatment *const treatment) :
   Model(DESS, 0, 0, 0, 4, TISSUEROW*TISSUECOL*TISSUELAYER){
   int k(0);
   double input;
@@ -66,7 +68,7 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
   if(fInPO2.is_open()){
     while(fInPO2>>input && k<m_numComp){
       ((ProstCell *)m_comp->at(k))->setInPO2(input);
-      (m_comp->at(k))->ModelUpdate();
+      (m_comp->at(k))->updateModel();
       ((ProstCell *)m_comp->at(k))->setInPO2(0.0);
       k++;
     }
@@ -83,7 +85,7 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
   if(fInTum.is_open()){
     while(fInTum>>input){
       setInTumor(k, input);
-      (m_comp->at(k))->ModelUpdate();
+      (m_comp->at(k))->updateModel();
       setInTumor(k, 0.0);
       k++;
     }
@@ -102,7 +104,7 @@ Gen3DProstTissue::Gen3DProstTissue(string nFInPO2, string nFInTum,
     if(fInVes.is_open()){
       while(fInVes>>input){
 	setInVes(k, input);
-	(m_comp->at(k))->ModelUpdate();
+	(m_comp->at(k))->updateModel();
 	setInVes(k, 0.0);
 	k++;
       }
@@ -123,7 +125,15 @@ Gen3DProstTissue::~Gen3DProstTissue(){
 }
 
 
-int Gen3DProstTissue::ModelInitSim(double DT){
+int Gen3DProstTissue::calcModelOut(){
+  for(int k=0;k<m_numComp;k++){
+    (m_comp->at(k))->calcModelOut();
+  }
+  return 0;
+}
+
+
+int Gen3DProstTissue::initModel(const double DT){
   int deadTime, doubTime;
 
   doubTime = ((ProstCell *)m_comp->at(0))->getDoubTime();
@@ -146,26 +156,18 @@ int Gen3DProstTissue::ModelInitSim(double DT){
 }
 
 
-int Gen3DProstTissue::ModelOut(){
-  for(int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelOut();
-  }
-  return 0;
-}
-
-
 //It does nothing for the moment
-int Gen3DProstTissue::ModelStart(){
+int Gen3DProstTissue::startModel(){
   for (int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelStart();
+    (m_comp->at(k))->startModel();
   }
   return 0;
 }
 
 
-int Gen3DProstTissue::ModelTerminate(){
+int Gen3DProstTissue::terminateModel(){
   for(int k=0;k<m_numComp;k++){
-    (m_comp->at(k))->ModelTerminate();
+    (m_comp->at(k))->terminateModel();
   }
  
   cout<<"Final number of living cells = "<<getNumAlive()<<endl;
@@ -178,7 +180,8 @@ int Gen3DProstTissue::ModelTerminate(){
 }
 
 
-int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
+int Gen3DProstTissue::updateModel(const double currentTime,
+				  const double DT){
   int k, m;
   int numTumor, numDead;
   
@@ -190,7 +193,7 @@ int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
       m=rand()%m_tumorEdge->size();
       k=m_tumorEdge->at(m);
       setInTumor(k, 1.0);
-      (m_comp->at(k))->ModelUpdate();
+      (m_comp->at(k))->updateModel();
       setInTumor(k, 0.0);
     }
   }
@@ -206,9 +209,9 @@ int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
 	preTumorSize = getNumTumor();
 	for(int k=0;k<m_numComp;k++){
 	  n=(double)rand()/(double)(RAND_MAX);
-	  if(((ProstCell *)m_comp->at(k))->CalcSF()<n){
+	  if(((ProstCell *)m_comp->at(k))->calcSF()<n){
 	    setInDead(k, 1.0);
-	    (m_comp->at(k))->ModelUpdate();
+	    (m_comp->at(k))->updateModel();
 	    setInDead(k, 0.0);
 	  }
 	}
@@ -225,7 +228,7 @@ int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
       m=rand()%m_deadCells->size();
       k=m_deadCells->at(m);
       setInAlive(k, 1.0);
-      (m_comp->at(k))->ModelUpdate();
+      (m_comp->at(k))->updateModel();
       setInAlive(k, 0.0);
     }
   }
@@ -233,16 +236,17 @@ int Gen3DProstTissue::ModelUpdate(double currentTime, double DT){
 }
 
 
-void Gen3DProstTissue::AddToDeadCells(int k){
+void Gen3DProstTissue::addToDeadCells(const int k){
   m_deadCells->push_back(k);
 }
 
 
-void Gen3DProstTissue::AddToEdge(int x, int y, int z){
+void Gen3DProstTissue::addToEdge(const int x, const int y,
+				 const int z){
   int k;
   bool alive(false), notInEdge(true);
  
-  k = XYZTok(x, y, z);
+  k = xyzTok(x, y, z);
   if(k !=-1){
     for(int i=0;i<m_tumorEdge->size();i++){
       if(k==m_tumorEdge->at(i)){
@@ -320,7 +324,7 @@ Treatment * Gen3DProstTissue::getTreatment() const{
 }
 
 
-int *Gen3DProstTissue::kToXYZ(int k) const{
+int *Gen3DProstTissue::kToXyz(const int k) const{
   int *tab= new int[3];
   if(k>-1 && k<TISSUEROW*TISSUECOL*TISSUELAYER){
     tab[0] = (k%(TISSUEROW*TISSUECOL))/TISSUECOL;
@@ -336,7 +340,7 @@ int *Gen3DProstTissue::kToXYZ(int k) const{
 }
 
 
-void Gen3DProstTissue::setInAlive(int k, double input){
+void Gen3DProstTissue::setInAlive(const int k, const double input){
   int x, y, z;
   int m;
   int *coordxyz;
@@ -344,8 +348,8 @@ void Gen3DProstTissue::setInAlive(int k, double input){
   ((ProstCell *)m_comp->at(k))->setInAlive(input);
   
   if(input){
-    RemoveFromDeadCells(k);
-    coordxyz = kToXYZ(k);
+    removeFromDeadCells(k);
+    coordxyz = kToXyz(k);
     x = coordxyz[0];
     y = coordxyz[1];
     z = coordxyz[2];
@@ -353,10 +357,10 @@ void Gen3DProstTissue::setInAlive(int k, double input){
       for(int j=-1;j<2;j++){
 	for(int l=-1;l<2;l++){
 	  if(i!=0 || j!=0 || l!=0){
-	    m = XYZTok(x+i, y+j, z+l);
+	    m = xyzTok(x+i, y+j, z+l);
 	    if(m!=-1){
 	      if(((ProstCell *)m_comp->at(m))->getTumor()){
-		AddToEdge(x, y, z);
+		addToEdge(x, y, z);
 		i = 2;
 		j = 2;
 		l = 2;
@@ -370,7 +374,7 @@ void Gen3DProstTissue::setInAlive(int k, double input){
 }
 
 
-void Gen3DProstTissue::setInDead(int k, double input){
+void Gen3DProstTissue::setInDead(const int k, const double input){
   int x, xx, y, yy, z, zz;
   int m, n;
   int *coordxyz;
@@ -380,8 +384,8 @@ void Gen3DProstTissue::setInDead(int k, double input){
   ((ProstCell *)m_comp->at(k))->setInDead(input);
   
   if(input){
-    AddToDeadCells(k);
-    coordxyz = kToXYZ(k);
+    addToDeadCells(k);
+    coordxyz = kToXyz(k);
     x = coordxyz[0];
     y = coordxyz[1];
     z = coordxyz[2];
@@ -389,7 +393,7 @@ void Gen3DProstTissue::setInDead(int k, double input){
       for(int j=-1;j<2;j++){
 	for(int l=-1;l<2;l++){
 	  if(i!=0 || j!=0 || l!=0){
-	    m = XYZTok(x+i, y+j, z+l);
+	    m = xyzTok(x+i, y+j, z+l);
 	    if(m!=-1){
 	      nTiNCSDC = true;
 	      xx = x+i;
@@ -400,7 +404,7 @@ void Gen3DProstTissue::setInDead(int k, double input){
 		  for(int ll=-1;ll<2;ll++){
 		    if((ii!=0 || jj!=0 || ll!=0) &&
 		       (ii != -i || jj !=-j || ll != -l)){
-		      n = XYZTok(xx+ii, yy+jj, zz+ll);
+		      n = xyzTok(xx+ii, yy+jj, zz+ll);
 		      if(n!=-1){
 			nTiNCSDC = nTiNCSDC &&
 			  !(((ProstCell *)m_comp->at(n))
@@ -411,7 +415,7 @@ void Gen3DProstTissue::setInDead(int k, double input){
 		}  
 	      }
 	      if(nTiNCSDC){
-		RemoveFromEdge(m);
+		removeFromEdge(m);
 	      }
 	    }
 	  }
@@ -422,15 +426,15 @@ void Gen3DProstTissue::setInDead(int k, double input){
 }
 
 
-void Gen3DProstTissue::setInTumor(int k, double input){
+void Gen3DProstTissue::setInTumor(const int k, const double input){
   int x, y, z;
   int *coordxyz;
   
   ((ProstCell *)m_comp->at(k))->setInTumor(input);
   
   if(input){
-    RemoveFromEdge(k);
-    coordxyz = kToXYZ(k);
+    removeFromEdge(k);
+    coordxyz = kToXyz(k);
     x = coordxyz[0];
     y = coordxyz[1];
     z = coordxyz[2];
@@ -438,7 +442,7 @@ void Gen3DProstTissue::setInTumor(int k, double input){
       for(int j=-1;j<2;j++){
 	for(int l=-1;l<2;l++){
 	  if(i != 0 || j != 0 || l != 0){
-	    AddToEdge(x+i, y+j, z+l);
+	    addToEdge(x+i, y+j, z+l);
 	  }
 	}
       }
@@ -447,16 +451,16 @@ void Gen3DProstTissue::setInTumor(int k, double input){
 }
 
 
-void Gen3DProstTissue::setInVes(int k, double input){
+void Gen3DProstTissue::setInVes(const int k, const double input){
   ((ProstCell *)m_comp->at(k))->setInVes(input);
   
   if(input){
-    RemoveFromEdge(k);
+    removeFromEdge(k);
   }
 }
 
 
-void Gen3DProstTissue::RemoveFromDeadCells(int k){
+void Gen3DProstTissue::removeFromDeadCells(const int k){
   for(int i=0;i<m_deadCells->size();i++){
     if(m_deadCells->at(i)==k){
       for(int ii=i;ii<m_deadCells->size()-1;ii++){
@@ -469,7 +473,7 @@ void Gen3DProstTissue::RemoveFromDeadCells(int k){
 }
 
 
-void Gen3DProstTissue::RemoveFromEdge(int k){
+void Gen3DProstTissue::removeFromEdge(const int k){
   for(int i=0;i<m_tumorEdge->size();i++){
     if(m_tumorEdge->at(i)==k){
       for(int ii=i;ii<m_tumorEdge->size()-1;ii++){
@@ -482,7 +486,8 @@ void Gen3DProstTissue::RemoveFromEdge(int k){
 }
 
 
-int Gen3DProstTissue::XYZTok(int x, int y, int z) const{
+int Gen3DProstTissue::xyzTok(const int x, const int y,
+			     const int z) const{
   if(x>-1 && x<TISSUEROW && y>-1 && y<TISSUECOL && z>-1 &&
      z<TISSUELAYER){
     return x*TISSUECOL + y + z*TISSUEROW*TISSUECOL;

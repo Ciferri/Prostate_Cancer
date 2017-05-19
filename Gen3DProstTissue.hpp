@@ -1,17 +1,10 @@
-/***************************************************************************
-                          gen2dtissueProst.hpp  -  description
-                             -------------------
-    begin                : mer jan 28 2004
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @file Gen3DProstTissue.hpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
+ */
 
 #ifndef DEF_Gen3DProstTissue
 #define DEF_Gen3DProstTissue
@@ -36,16 +29,19 @@
 class Gen3DProstTissue : public Model {
  public:
   Gen3DProstTissue();
-  Gen3DProstTissue(std::string nFInPO2, std::string nFInTum,
-		   std::string nFInVes, Treatment *treatment);
+  Gen3DProstTissue(const std::string nFInPO2,
+		   const std::string nFInTum,
+		   const std::string nFInVes,
+		   Treatment *const treatment);
   ~Gen3DProstTissue();
-  virtual int ModelInitSim(double DT);
-  virtual int ModelOut();
-  virtual int ModelStart();
-  virtual int ModelTerminate();
-  virtual int ModelUpdate(double currentTime, double DT);
-  void AddToDeadCells(int k);
-  void AddToEdge(int x, int y, int z);
+  virtual int calcModelOut();
+  virtual int initModel(const double DT);
+  virtual int startModel();
+  virtual int terminateModel();
+  virtual int updateModel(const double currentTime,
+			  const double DT);
+  void addToDeadCells(const int k);
+  void addToEdge(const int x, const int y, const int z);
   double getAlpha() const;
   double getBeta() const;
   int getNumAlive() const;
@@ -53,14 +49,14 @@ class Gen3DProstTissue : public Model {
   int getNumTumor() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
-  int *kToXYZ(int k) const;
-  void setInAlive(int k, double input);
-  void setInDead(int k, double input);
-  void setInTumor(int k, double input);
-  void setInVes(int k, double input);
-  void RemoveFromDeadCells(int k);
-  void RemoveFromEdge(int k);
-  int XYZTok(int x, int y, int z) const;
+  int *kToXyz(const int k) const;
+  void setInAlive(const int k, const double input);
+  void setInDead(const int k, const double input);
+  void setInTumor(const int k, const double input);
+  void setInVes(const int k, const double input);
+  void removeFromDeadCells(const int k);
+  void removeFromEdge(const int k);
+  int xyzTok(const int x, const int y, const int z) const;
 
 protected:
   Model *m_tissue[TISSUEROW][TISSUECOL][TISSUELAYER];

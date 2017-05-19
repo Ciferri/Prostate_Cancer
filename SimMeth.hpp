@@ -1,5 +1,7 @@
 /**
- * @(#) SimMeth.hpp
+ * @file SimMeth.hpp
+ * @brief
+ * @author Alfredo Hernandez
  */
 
 #ifndef SimMeth_h_h

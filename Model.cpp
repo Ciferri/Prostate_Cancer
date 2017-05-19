@@ -1,20 +1,20 @@
-/*
- *  Model.cpp
- *  AlfSimLib
- *
- *  Created by Alfredo Hern‡ndez on Fri Jul 26 2002.
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file Model.cpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
  */
 
-#include "Model.hpp"
 #include <iostream>
+
+#include "Model.hpp"
 
 using namespace std;
 
-Model::Model(modelType type, int numIn, int numSt, int numOut,
-	     int numParam, int numComp){
-
+Model::Model(const modelType type, const int numIn, const int numSt,
+	     const int numOut, const int numParam,
+	     const int numComp){
   m_typeModel = type;
   m_numIn = numIn;
   m_numSt = numSt;
@@ -41,12 +41,12 @@ Model::~Model(){
 }
 
 
-int Model::ModelTerminate(){
+int Model::terminateModel(){
   return 0;
 }
 
 
-int Model::ModelStart(){
+int Model::startModel(){
   return 0;
 }
 

@@ -1,4 +1,10 @@
-/*Simulator.cpp*/
+/**
+ * @file Simulator.cpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
 
 #include <stdlib.h>
 
@@ -16,7 +22,8 @@ Simulator::Simulator(){
 }
 
 
-Simulator::Simulator (Model* model, double currentTime, double DT){
+Simulator::Simulator (Model* const model, const double currentTime,
+		      const double DT){
   m_model = model;
   m_currentTime = currentTime;
   m_DT = DT;
@@ -32,7 +39,7 @@ Simulator::~Simulator(){
 }
 
 
-void Simulator::setModel(Model *model){
+void Simulator::setModel(Model *const model){
   m_model = model;
 }
 
@@ -41,17 +48,16 @@ void Simulator::stop(){
 }
 
 
-void Simulator::start(double simTime){
+void Simulator::start(double const simTime){
   int index(0);
   int toto(0);
   //Creation of each element of outList
   for (int i=0;i<m_model->getNumOut();i++){
     //vector of numOut pointers on globalTime/DT samples
     m_outList->push_back(new OutputData());
-
   }
-  m_model->ModelInitSim(m_DT);
-  m_model->ModelOut();
+  m_model->initModel(m_DT);
+  m_model->calcModelOut();
   
   if(m_model->getNumComp()==0){
     for(int i=0;i<m_model->getNumOut();i++){
@@ -76,9 +82,8 @@ void Simulator::start(double simTime){
   m_outFile<<endl ;
   toto++;
 
-
   //It does nothing for the moment
-  m_model->ModelStart();
+  m_model->startModel();
     
   // Simulation loop
   int numIter;
@@ -87,8 +92,8 @@ void Simulator::start(double simTime){
   for(int j=0;j<numIter;j++) {
     m_currentTime = j*m_DT;
     //Update of the state of every cell composing the tissue
-    m_model->ModelUpdate(m_currentTime, m_DT);
-    m_model->ModelOut();
+    m_model->updateModel(m_currentTime, m_DT);
+    m_model->calcModelOut();
              
     if ((j%6)==0) {
       //cout << "Simulator time = " << m_currentTime << endl;
@@ -116,6 +121,6 @@ void Simulator::start(double simTime){
       toto++;
     }
   }
-  m_model->ModelTerminate();
+  m_model->terminateModel();
   m_outFile.close();
 }

@@ -1,5 +1,9 @@
 /**
- * @(#) Simulator.hpp
+ * @file Simulator.hpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
  */
 
 #ifndef DEF_Simulator
@@ -17,11 +21,12 @@ typedef std::vector<OutputData *> OutputDataList;
 class Simulator{	
 public:
   Simulator();
-  Simulator(Model *model, double currentTime, double DT);
+  Simulator(Model *const model, const double currentTime,
+	    const double DT);
   ~Simulator();
-  void setModel(Model *model);
+  void setModel(Model *const model);
   //void simulate( double currentTime, double DT );
-  void start(double duration);
+  void start(double const simTime);
   void stop();
   
 private:

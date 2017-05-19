@@ -1,8 +1,11 @@
 /**
- * @(#) SimMeth.cpp
+ * @file SimMeth.cpp
+ * @brief
+ * @author Alfredo Hernandez
  */
 
 #include "SimMeth.hpp"
+
 #include <stdlib.h>
 
 SimMeth::SimMeth(methName meth, Model* model){
