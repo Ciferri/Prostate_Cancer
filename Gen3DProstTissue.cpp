@@ -216,7 +216,6 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
   for(int k=0;k<m_numComp;k++){
     (m_comp->at(k))->updateModel(currentTime, DT);
-    (m_comp->at(k))->calcModelOut();
   }
   return 0;
 }
