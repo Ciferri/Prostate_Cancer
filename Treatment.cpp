@@ -33,8 +33,9 @@ Treatment::Treatment(){
 }
 
 
-Treatment::Treatment(double fraction, double totalDose,
-		     double interval, vector<bool> schedule){
+Treatment::Treatment(const double fraction, const double totalDose,
+		     const double interval,
+		     const vector<bool> schedule){
   m_fraction = fraction;
   m_interval = interval;
   m_totalDose = totalDose;
