@@ -1,11 +1,10 @@
-/*
- *  main.cpp
- *
- *  Created by Alfredo Hernández on Fri Jul 26 2002.
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file main.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
-
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -1,8 +1,9 @@
-/*
- *  generic3dtissueProstate.cpp
- *
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file Gen3DProstTissue.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #include <iostream>

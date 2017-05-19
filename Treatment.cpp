@@ -1,3 +1,10 @@
+/**
+ * @file Treatment.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
+
 #include <iostream>
 #include <vector>
 
@@ -54,9 +61,11 @@ vector<bool> Treatment::getSchedule() const{
   return m_schedule;
 }
 
+
 double Treatment::getTotalDose() const{
   return m_totalDose;
 }
+
 
 ostream &operator<<(ostream &stream, Treatment *treatment){
   stream<<"Total dose = "<<treatment->getTotalDose()<<" Gy"<<endl;

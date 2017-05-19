@@ -1,4 +1,10 @@
-/*Simulator.cpp*/
+/**
+ * @file Simulator.cpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
 
 #include <stdlib.h>
 

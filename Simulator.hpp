@@ -1,5 +1,9 @@
 /**
- * @(#) Simulator.hpp
+ * @file Simulator.hpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
  */
 
 #ifndef DEF_Simulator

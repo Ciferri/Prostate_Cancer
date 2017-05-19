@@ -1,5 +1,7 @@
 /**
- * @(#) SimMeth.cpp
+ * @file SimMeth.cpp
+ * @brief
+ * @author Alfredo Hernandez
  */
 
 #include "SimMeth.hpp"

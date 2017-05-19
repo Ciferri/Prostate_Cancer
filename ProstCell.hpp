@@ -1,9 +1,9 @@
-/*
- *  ProstCell.hpp
- *
- *  Copyright (c) 2001 __MyCompanyName__. All rights reserved.
- * 	03.23.2017
- *
+/**
+ * @file ProstCell.hpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #ifndef DEF_PROSTCELL

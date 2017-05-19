@@ -1,3 +1,10 @@
+/**
+ * @file Treatment.hpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
+ */
+
 #ifndef DEF_Treatment
 #define DEF_Treatment
 

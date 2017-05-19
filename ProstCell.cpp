@@ -1,8 +1,9 @@
-/*
- *  ProstCell.cpp
- *
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *	03.23.2017
+/**
+ * @file ProstCell.cpp
+ * @brief
+ * @author Carlos Sosa Marrero
+ * @author Alfredo Hernandez
+ * @date 05.19.17 
  */
 
 #include <iostream>
@@ -150,7 +151,7 @@ int ProstCell::updateModel(const double currentTime,
 			   const double DT){
   int i;
   double p;
-  ProstCell *newTumorCell = 0;
+  ProstCell *newTumorCell (0);
   
   ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_DEAD &&
     !IN_VES;   

@@ -1,10 +1,9 @@
-/*
- *  Model.hpp
- *  AlfSimLib
- *
- *  Created by Alfredo Hern‡ndez on Fri Jul 26 2002.
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file Model.hpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
  */
 
 #ifndef DEF_MODEL
@@ -12,10 +11,7 @@
 
 #include <vector>
 
-//define paramters storage
 typedef std::vector<double> DoubleVect;
-
-//model types
 enum modelType {DEVS,DESS,DTSS};
 
 class Model {

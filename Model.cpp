@@ -1,10 +1,9 @@
-/*
- *  Model.cpp
- *  
- *
- *  Created by Alfredo Hern‡ndez on Fri Jul 26 2002.
- *  Copyright (c) 2001 INSERM. All rights reserved.
- *
+/**
+ * @file Model.cpp
+ * @brief
+ * @author Alfredo Hernandez
+ * @author Carlos Sosa Marrero
+ * @date 05.19.17 
  */
 
 #include "Model.hpp"
