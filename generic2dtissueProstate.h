@@ -29,8 +29,8 @@
 //~ #include <itkImageFileReader.h>
 //~ #include <itkImageRegionIterator.h>
 
-#define TISSUESIZE_COL 98 
-#define TISSUESIZE_ROW 63 
+#define TISSUESIZE_COL 107
+#define TISSUESIZE_ROW 66
 #define FILTERSIZE 3
 #define INIT_VASCULAR_PO2 42.0
 
@@ -59,14 +59,14 @@ public:
   double filterIn[FILTERSIZE][FILTERSIZE];  
   double filterOut[FILTERSIZE][FILTERSIZE];
 
-  Model *tissue[TISSUESIZE_COL][TISSUESIZE_ROW];
-  double *gradTissue[TISSUESIZE_COL][TISSUESIZE_ROW];
-  double gradLin[TISSUESIZE_COL*TISSUESIZE_ROW][1];
-  double resDiffusionIn[TISSUESIZE_COL][TISSUESIZE_ROW];  
-  double resDiffusionOut[TISSUESIZE_COL][TISSUESIZE_ROW];
-  double initImageTissue[TISSUESIZE_COL][TISSUESIZE_ROW];
-  double Conso_PO2[TISSUESIZE_COL][TISSUESIZE_ROW];
-  double vectTissue[TISSUESIZE_COL*TISSUESIZE_ROW];
+  Model *tissue[TISSUESIZE_ROW][TISSUESIZE_COL];
+  double *gradTissue[TISSUESIZE_ROW][TISSUESIZE_COL];
+  double gradLin[TISSUESIZE_ROW*TISSUESIZE_COL][1];
+  double resDiffusionIn[TISSUESIZE_ROW][TISSUESIZE_COL];  
+  double resDiffusionOut[TISSUESIZE_ROW][TISSUESIZE_COL];
+  double initImageTissue[TISSUESIZE_ROW][TISSUESIZE_COL];
+  double Conso_PO2[TISSUESIZE_ROW][TISSUESIZE_COL];
+  double vectTissue[TISSUESIZE_ROW*TISSUESIZE_COL];
 
 // constructor / destructor
 	generic2dtissueProstate();
