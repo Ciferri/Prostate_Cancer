@@ -17,14 +17,16 @@
 #include "Treatment.hpp"
 
 #define TISSUEROW 57
-#define TISSUECOL 94
+#define TISSUECOL 97
 #define TISSUELAYER 1
 
 //Internal Parameters
-#define PAR_PF        m_param->at(0)
-#define PAR_NUM_TUMOR m_param->at(1)
-#define PAR_RF        m_param->at(2)
-#define PAR_NUM_DEAD  m_param->at(3)
+#define PAR_INIT_NUM_TUMOR m_param->at(0)
+#define PAR_NUM_DEAD       m_param->at(1)
+#define PAR_NUM_SESSION    m_param->at(2)
+#define PAR_NUM_TUMOR      m_param->at(3)
+#define PAR_PF             m_param->at(4)
+#define PAR_RF             m_param->at(5)
 
 class Gen3DProstTissue : public Model {
  public:
@@ -59,6 +61,7 @@ class Gen3DProstTissue : public Model {
   int xyzTok(const int x, const int y, const int z) const;
 
 protected:
+  int m_flag;
   Model *m_tissue[TISSUEROW][TISSUECOL][TISSUELAYER];
   Treatment *m_treatment;
   std::vector<int> *m_deadCells;

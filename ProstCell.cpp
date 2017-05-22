@@ -20,7 +20,7 @@ ProstCell::ProstCell() : Model(DESS, 5, 4, 1, 8, 0){
   ST_TUMOR = 0.0;		
   ST_VES = 0.0;
   PAR_DOUBTIME = 1008; //h 
-  PAR_DEADTIME = 168; //h
+  PAR_DEADTIME = 234; //h
   PAR_M = 3.0; //adim.
   PAR_K = 3.0; //mmHg
   PAR_PO2 = 3.5; //mmHg
@@ -36,7 +36,7 @@ ProstCell::ProstCell(Model *const parent) :
   ST_TUMOR = 0.0;		
   ST_VES = 0.0;
   PAR_DOUBTIME = 1008; //h
-  PAR_DEADTIME = 168; //h
+  PAR_DEADTIME = 234; //h
   PAR_M = 3.0; //adim.
   PAR_K = 3.0; //mmHg
   PAR_PO2 = 3.5; //mmHg
@@ -73,10 +73,11 @@ int ProstCell::terminateModel(){
 
 int ProstCell::updateModel(const double currentTime,
 			   const double DT){
-  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_VES;   
-  ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !IN_DEAD;
-  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_VES;
-  ST_VES = ST_VES || IN_VES;
+  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_DEAD &&
+    !IN_VES;   
+  ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !ST_ALIVE && !IN_DEAD;
+  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUMOR;
+  ST_VES = (ST_VES || IN_VES) && !IN_DEAD;
 
   if(ST_ALIVE){
     PAR_ALPHA = 0;
@@ -116,7 +117,6 @@ double ProstCell::calcSF() const{
   SF = exp(-PAR_ALPHA/PAR_M * fraction * calcOER() -
 	   PAR_BETA/(PAR_M*PAR_M) * fraction*fraction *
 	   calcOER()*calcOER());
-  return SF;
 }
 
 
