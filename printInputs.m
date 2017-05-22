@@ -1,39 +1,34 @@
 clear all
 close all
-img=imread("initTissues/Tissu P14 01685 7-5-cd31 97x57.png");
-nrow=57;
-ncol=97;
+img=imread("initTissues/Tissu P14 26671 4-1-cd31 94x58.png");
+nrow=58;
+ncol=94;
+
 img=imresize(img,[nrow,ncol]);
 imgB=img(:,:,3);
+
 initVes=imgB>=0 & imgB<80;
 fid=fopen('inVes.dat','w');
-count=0;
 for i=1:nrow
   for j=1:ncol
     fprintf(fid,'%f\n',initVes(i,j));
-    if(initVes(i,j)==1)
-    count++;
-    endif
   end
 end
-count
 fclose(fid);
+
 initTum=imgB>80 &imgB<200;
 fid=fopen('inTum.dat','w');
-count=0;
 for i=1:nrow
   for j=1:ncol
     fprintf(fid,'%f\n',initTum(i,j));
-    if(initTum(i,j)==1)
-    count++;
-    endif
   end
 end
-count
 fclose(fid);
 
-initPO2=0.77*ones(nrow,ncol);
+load('PO2.dat');
+n3=size(PO2,1);
 fid=fopen('inPO2.dat','w');
+initPO2=reshape(PO2(n3,:),ncol,nrow)';
 for i=1:nrow
   for j=1:ncol
       fprintf(fid,'%f\n',initPO2(i,j));

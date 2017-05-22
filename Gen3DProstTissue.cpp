@@ -189,7 +189,6 @@ int Gen3DProstTissue::updateModel(const double currentTime,
   
   PAR_NUM_TUMOR *= PAR_PF;
   numTumor = getNumTumor();
-  //cout<<"Number of tumor cells = "<<numTumor<<endl;
   for(int i=numTumor;i<(int)PAR_NUM_TUMOR;i++){
     if(m_tumorEdge->size()>0){
       m=rand()%m_tumorEdge->size();
@@ -209,6 +208,8 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 	double n;
 
 	preTumorSize = getNumTumor();
+	//cout<<"Number of tumor cells = "<<getNumTumor()<<endl;
+	//cout<<"Irradiation"<<endl;
 	for(int k=0;k<m_numComp;k++){
 	  n=(double)rand()/(double)(RAND_MAX);
 	  if(((ProstCell *)m_comp->at(k))->calcSF()<n){
@@ -220,8 +221,9 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 	
 	PAR_NUM_TUMOR -= preTumorSize - getNumTumor();
 	PAR_NUM_DEAD += preTumorSize - getNumTumor();
-	//cout<<"Irradiation"<<endl;;
 	//cout<<"Cells killed = "<<preTumorSize - getNumTumor()<<endl;
+	//cout<<"Number of tumor cells = "<<getNumTumor()<<endl;
+	//cout<<"---------------------------------------"<<endl;
 	PAR_NUM_SESSION += 1.0;
       }
     }

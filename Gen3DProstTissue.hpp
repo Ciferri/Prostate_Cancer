@@ -16,8 +16,8 @@
 #include "ProstCell.hpp"
 #include "Treatment.hpp"
 
-#define TISSUEROW 57
-#define TISSUECOL 97
+#define TISSUEROW 58
+#define TISSUECOL 94
 #define TISSUELAYER 1
 
 //Internal Parameters

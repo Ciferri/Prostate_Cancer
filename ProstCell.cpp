@@ -24,8 +24,8 @@ ProstCell::ProstCell() : Model(DESS, 5, 4, 1, 8, 0){
   PAR_M = 3.0; //adim.
   PAR_K = 3.0; //mmHg
   PAR_PO2 = 3.5; //mmHg
-  PAR_ALPHA = 0.15; //Gy^-1
-  PAR_BETA = 0.048; //Gy^-2
+  PAR_ALPHA = 0; //Gy^-1
+  PAR_BETA = 0; //Gy^-2
   m_parent = 0;
 }
 
@@ -40,8 +40,8 @@ ProstCell::ProstCell(Model *const parent) :
   PAR_M = 3.0; //adim.
   PAR_K = 3.0; //mmHg
   PAR_PO2 = 3.5; //mmHg
-  PAR_ALPHA = 0.15; //Gy^-1
-  PAR_BETA = 0.048; //Gy^-2
+  PAR_ALPHA = 0; //Gy^-1
+  PAR_BETA = 0; //Gy^-2
   m_parent = parent;
 }
 

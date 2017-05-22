@@ -7,12 +7,12 @@ cmap=[0.5 0.5 0.5;
       1 0 0;
       0 0 0
       ];
-n1=97;
-n2=57;
+nrow=58;
+ncol=94;
 n3=size(out,1);
 figure(1)
 for i=1:n3
-matrix(:,:,i)=reshape(out(i,:),n1,n2);
+matrix(:,:,i)=reshape(out(i,:),ncol,nrow);
 img=uint16(matrix(:,:,i)');
 imshow(img,cmap)
 img=imresize(img,4,'nearest');
