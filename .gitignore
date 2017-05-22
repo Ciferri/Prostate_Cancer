@@ -3,7 +3,6 @@ build/
 *~
 *.dat
 *.o
-*.m
 *.png
 *.txt
 cmake_install.cmake
