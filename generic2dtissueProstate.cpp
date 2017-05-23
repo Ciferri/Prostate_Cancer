@@ -29,14 +29,14 @@ generic2dtissueProstate::generic2dtissueProstate() : Model(DESS,0,0,0,0,TISSUESI
   }
 
 
-  ifstream tissueLoad("/home/ciferri/Bureau/stage/branch_github/Ciferri/data/inVes12.dat");
+  ifstream tissueLoad("/home/ciferri/Bureau/stage/branch_github/Ciferri/data/inVes16.dat");
   if(tissueLoad){
 	  int i=0;
 	  string valeur;
 	  while (std::getline(tissueLoad, valeur)){
-		istringstream ( valeur ) >> vectTissue[i];
-		i++;
-	}
+			istringstream ( valeur ) >> vectTissue[i];
+			i++;
+		}
   }
 
 

@@ -29,8 +29,8 @@
 //~ #include <itkImageFileReader.h>
 //~ #include <itkImageRegionIterator.h>
 
-#define TISSUESIZE_COL 107
-#define TISSUESIZE_ROW 66
+#define TISSUESIZE_COL 94
+#define TISSUESIZE_ROW 58
 #define FILTERSIZE 3
 #define INIT_VASCULAR_PO2 42.0
 

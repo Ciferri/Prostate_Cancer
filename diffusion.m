@@ -1,8 +1,8 @@
 function diffusion()
   close all;
   
-  x=107;
-  y=66;
+  x=94;
+  y=58;
   
   palier1=0;
   palier2=0;
@@ -27,7 +27,7 @@ function diffusion()
     C = flip(B,2);
     imagesc(C);
     #colormap('gray');
-    img = ['/home/ciferri/Bureau/stage/branch_github/Ciferri/img/impVes12/figure' num2str(i,'%04d') '.png'];
+    img = ['/home/ciferri/Bureau/stage/branch_github/Ciferri/img/impVes16/figure' num2str(i,'%04d') '.png'];
     saveas(1,img);
   end  
   
