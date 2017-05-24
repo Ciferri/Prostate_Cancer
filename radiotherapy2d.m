@@ -1,5 +1,6 @@
 clear all
 close all
+pkg load image
 load('out.dat');
 cmap=[0.5 0.5 0.5; 
       1 1 1; 
