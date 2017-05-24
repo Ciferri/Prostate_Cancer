@@ -20,7 +20,7 @@
 #define TISSUECOL 94
 #define TISSUELAYER 1
 
-//Internal Parameters
+//Internal parameters
 #define PAR_INIT_NUM_TUMOR m_param->at(0)
 #define PAR_NUM_DEAD       m_param->at(1)
 #define PAR_NUM_SESSION    m_param->at(2)
