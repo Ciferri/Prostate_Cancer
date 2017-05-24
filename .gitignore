@@ -1,6 +1,7 @@
 CMakeFiles/
 build/
 *~
+*.avi
 *.dat
 *.o
 *.m
