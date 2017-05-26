@@ -48,13 +48,13 @@ class Gen3DProstTissue : public Model {
   double getBeta() const;
   int getNumAlive() const;
   int getNumDead() const;
-  int getNumTumor() const;
+  int getNumTum() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
   int *kToXyz(const int k) const;
   void setInAlive(const int k, const double input);
   void setInDead(const int k, const double input);
-  void setInTumor(const int k, const double input);
+  void setInTum(const int k, const double input);
   void setInVes(const int k, const double input);
   void removeFromDeadCells(const int k);
   void removeFromEdge(const int k);
