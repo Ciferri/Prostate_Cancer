@@ -33,6 +33,8 @@ for k = 1:nlayer
     for j = 1:ncol
       if(k == ceil(nlayer / 2))
         fprintf(fid, '%f\n', initTum(i, j));
+      else
+      fprintf(fid, '%f\n', 0);
       endif
     end
   end
