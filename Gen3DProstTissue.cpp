@@ -17,79 +17,74 @@
 
 using namespace std;
 
-Gen3DProstTissue::Gen3DProstTissue() :
-  Model(DESS, 0, 0, 0, 2, TISSUEROW*TISSUECOL*TISSUELAYER){
-  int k(0);
-  double inputTimer;
-
+Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
+				   const int nlayer) :
+  Model(DESS, 0, 0, 0, 2, nrow * ncol * nlayer){
+  m_nrow   = nrow;
+  m_ncol   = ncol;
+  m_nlayer = nlayer;
+  
   m_treatment = 0;
     
   //Creation of the cells composing the tissue model
-  for(int i=0;i<TISSUEROW;i++){
-    for(int j=0;j<TISSUECOL;j++){
-      for(int l=0;l<TISSUELAYER;l++){
-	m_comp->at(k) = new ProstCell(this);
-	m_tissue[i][j][l] = m_comp->at(k);
-	m_comp->at(k)->calcModelOut();
-	m_numOut += (m_comp->at(k))->getNumOut();
-	k++;
-      }
-    }
+  for(int k(0); k < m_numComp; k++){
+    m_comp->at(k) = new ProstCell(this);
+    m_numOut += (m_comp->at(k))->getNumOut();
   }
 }
 
 
-Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
+Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
+				   const int nlayer,
+				   const string nFInPO2,
 				   const string nFInTum,
 				   const string nFInVes,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 2, TISSUEROW*TISSUECOL*TISSUELAYER){
-  int k(0);
+  Model(DESS, 0, 0, 0, 2, nrow * ncol * nlayer){
   int selInitPhase;
+  int m;
+  int x, y, z;
+  int *coordxyz;
   double doubTime;
   double inputPO2, inputTimer, inputTum, inputVes;
   ifstream fInPO2(nFInPO2.c_str());
   ifstream fInTum(nFInTum.c_str());
   ifstream fInVes(nFInVes.c_str());
+
+  m_nrow   = nrow;
+  m_ncol   = ncol;
+  m_nlayer = nlayer;
+  
   m_treatment = treatment;
   
   //Creation of the cells composing the tissue model
-  for(int i=0;i<TISSUEROW;i++){
-    for(int j=0;j<TISSUECOL;j++){
-      for(int l=0;l<TISSUELAYER;l++){
-	m_comp->at(k) = new ProstCell(this);
-    	m_tissue[i][j][l] = m_comp->at(k);
-	m_comp->at(k)->calcModelOut();
-	m_numOut += (m_comp->at(k))->getNumOut();
-
-	k++;
-      }
-    }
+  for(int k(0); k < m_numComp; k++){
+    m_comp->at(k) = new ProstCell(this);
+    m_numOut += (m_comp->at(k))->getNumOut();
   }
-
-  for(int i=0;i<TISSUEROW;i++){
-    for(int j=0;j<TISSUECOL;j++){
-      for(int l=0;l<TISSUELAYER;l++){
-	for(int ii=-1;ii<=1;ii++){
-	  for(int jj=-1;jj<=1;jj++){
-	    for(int ll=-1;ll<=1;ll++){
-	      if(ii!=0 || jj!=0 || ll!=0){
-		if(i+ii>=0 && j+jj>=0 && l+ll>=0 && i+ii<TISSUEROW
-		   && j+jj<TISSUECOL && l+ll<TISSUELAYER){
-		  ((ProstCell *)m_tissue[i][j][l])
-		    ->addToEdge(((ProstCell *)m_tissue[i+ii]
-				 [j+jj][l+ll]));
-		}
-	      }
+  //Definition of each cell's edge
+  for(int k(0); k < m_numComp; k++){
+    coordxyz = kToXyz(k);
+    x = coordxyz[0];
+    y = coordxyz[1];
+    z = coordxyz[2];
+    for(int i(-1); i <= 1; i++){
+      for(int j(-1); j <= 1; j++){
+	for(int l(-1); l <= 1; l++){
+	  if(i!=0 || j!=0 || l!=0){
+	    m = xyzTok(x + i, y + j, z +l);
+	    if(m != -1){
+	      ((ProstCell *)m_comp->at(k))
+		->addToEdge(((ProstCell *)m_comp->at(m)));
 	    }
 	  }
-	}   
+	}
       }
-    }
+    }   
   }
   
-  //Initialization of the PO2 and cells state
   
+  //Initialization of the PO2 and cells state 
   if(fInPO2.is_open() == 0){
     cout << "An error occurred while opening initial PO2 data file"
 	 << endl;
@@ -230,42 +225,42 @@ int Gen3DProstTissue::updateModel(const double currentTime,
   }
 
   if(fmod(currentTime, m_treatment->getInterval()) == 0){
-      i = currentTime / m_treatment->getInterval();
-      if((m_treatment->getSchedule()).at(i)){
-	PAR_NUM_SESSION += 1.0;
-      }
+    i = currentTime / m_treatment->getInterval();
+    if((m_treatment->getSchedule()).at(i)){
+      PAR_NUM_SESSION += 1.0;
+    }
   }
   
   if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
-      cout << "Total dose needed to kill 50% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
-    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
-      cout << "Total dose needed to kill 80% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
-    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
-      cout << "Total dose needed to kill 90% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
-    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
-      cout << "Total dose needed to kill 95% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
-    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
-      cout << "Total dose needed to kill 99% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
-    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
-      cout << "Total dose needed to kill 99.9% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
-      m_flag++;
-    }
+    cout << "Total dose needed to kill 50% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
+  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
+    cout << "Total dose needed to kill 80% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
+  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
+    cout << "Total dose needed to kill 90% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
+  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
+    cout << "Total dose needed to kill 95% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
+  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
+    cout << "Total dose needed to kill 99% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
+  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
+    cout << "Total dose needed to kill 99.9% of tumor cells = " <<
+      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+    m_flag++;
+  }
   return 0;
 }
 
@@ -363,6 +358,32 @@ Treatment *Gen3DProstTissue::getTreatment() const{
 }
 
 
+int *Gen3DProstTissue::kToXyz(const int k) const{
+  int *tab= new int[3];
+  if(k > -1 && k < m_nrow * m_ncol * m_nlayer){
+    tab[0] = (k % (m_nrow * m_ncol)) / m_ncol;
+    tab[1] = (k % (m_nrow * m_ncol)) % m_ncol;
+    tab[2] = k / (m_nrow * m_ncol);
+  }
+  else{
+    tab[0] = -1;
+    tab[1] = -1;
+    tab[2] = -1;
+  }
+  return tab;
+}
+
+
+int Gen3DProstTissue::xyzTok(const int x, const int y,
+			     const int z) const{
+  if(x > -1 && x < m_nrow && y > -1 && y < m_ncol && z > -1 &&
+     z < m_nlayer){
+    return x * m_ncol + y + z * m_nrow * m_ncol;
+  }
+  else{
+    return -1;
+  }
+}
 
 
 
