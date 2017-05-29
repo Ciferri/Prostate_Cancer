@@ -1,4 +1,5 @@
 #!/bin/bash
+rm img/*.png
 octave printInputs.m
 ./m2slv01
-octave radiotherapy2d.m
+octave printOutImg.m
