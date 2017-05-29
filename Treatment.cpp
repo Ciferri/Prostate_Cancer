@@ -13,21 +13,21 @@
 using namespace std;
 
 Treatment::Treatment(){
-  m_fraction = 3.1; //Gy
-  m_interval = 24; //h
-  m_totalDose = 62.0; //Gy
+  m_fraction  = 2; //Gy
+  m_interval  = 24; //h
+  m_totalDose = 80.0; //Gy
 
   //Sessions scheduled Mon-Fri
   int accSession(0), i(0), numSession;
   numSession=(int)(m_totalDose/m_fraction);
   while(accSession<=numSession){
-    if((i+1)%7==6||(i+1)%7==0){
+    /*if((i+1)%7==6||(i+1)%7==0){
       m_schedule.push_back(false);
     }
-    else{
+    else{*/
       m_schedule.push_back(true);
       accSession++;
-    }
+      //}
     i++;
   }
 }
@@ -36,15 +36,15 @@ Treatment::Treatment(){
 Treatment::Treatment(const double fraction, const double totalDose,
 		     const double interval,
 		     const vector<bool> schedule){
-  m_fraction = fraction;
-  m_interval = interval;
+  m_fraction  = fraction;
+  m_interval  = interval;
   m_totalDose = totalDose;
-  m_schedule = schedule;
+  m_schedule  = schedule;
 }
 
 
 double Treatment::getDuration() const{
-  return m_schedule.size()*m_interval;
+  return m_schedule.size() * m_interval;
 }
 
 
@@ -69,8 +69,10 @@ double Treatment::getTotalDose() const{
 
 
 ostream &operator<<(ostream &stream, Treatment *treatment){
-  stream<<"Total dose = "<<treatment->getTotalDose()<<" Gy"<<endl;
-  stream<<"Fraction = "<<treatment->getFraction()<<" Gy"<<endl;
-  stream<<"---------------------------------------------";
+  stream << "Total dose = " << treatment->getTotalDose() <<
+    " Gy" << endl;
+  stream << "Fraction = " << treatment->getFraction() << " Gy" <<
+    endl;
+  stream << "---------------------------------------------";
   return stream;
 }

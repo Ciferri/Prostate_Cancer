@@ -14,7 +14,7 @@
 #include "Treatment.hpp"
 
 //Inputs
-#define IN_TUMOR      m_in->at(0)
+#define IN_TUM        m_in->at(0)
 #define IN_VES        m_in->at(1)
 #define IN_DEAD       m_in->at(2)
 #define IN_ALIVE      m_in->at(3)
@@ -24,7 +24,7 @@
 //State variables
 #define ST_ALIVE      m_st->at(0)
 #define ST_DEAD       m_st->at(1)
-#define ST_TUMOR      m_st->at(2)
+#define ST_TUM        m_st->at(2)
 #define ST_VES        m_st->at(3)
 #define ST_G1         m_st->at(4)
 #define ST_S          m_st->at(5)
@@ -71,14 +71,14 @@ public :
   double getM() const;
   int getOutState() const;
   double getS() const;
-  double getTumor() const;
+  double getTum() const;
   double getVes() const;
   ProstCell *searchSpace() const;
   void setInAlive(const double input);
   void setInDead(const double input);
   void setInPO2(const double input);
   void setInTimer(const double input);
-  void setInTumor(const double input);
+  void setInTum(const double input);
   void setInVes(const double input);
 
 protected:

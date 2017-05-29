@@ -16,9 +16,13 @@
 #include "ProstCell.hpp"
 #include "Treatment.hpp"
 
-#define TISSUEROW 57
+#define TISSUEROW 58
 #define TISSUECOL 94
 #define TISSUELAYER 1
+
+//Internal parameters
+#define PAR_INIT_NUM_TUM m_param->at(0)
+#define PAR_NUM_SESSION    m_param->at(1)
 
 class Gen3DProstTissue : public Model {
  public:
@@ -40,11 +44,12 @@ class Gen3DProstTissue : public Model {
   int getNumG2() const;
   int getNumM() const;
   int getNumS() const;
-  int getNumTumor() const;
+  int getNumTum() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
-
+  
 protected:
+  int m_flag;
   Model *m_tissue[TISSUEROW][TISSUECOL][TISSUELAYER];
   Treatment *m_treatment;
 };

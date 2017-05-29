@@ -18,9 +18,9 @@
 using namespace std;
 
 Gen3DProstTissue::Gen3DProstTissue() :
-  Model(DESS, 0, 0, 0, 0, TISSUEROW*TISSUECOL*TISSUELAYER){
+  Model(DESS, 0, 0, 0, 2, TISSUEROW*TISSUECOL*TISSUELAYER){
   int k(0);
-  double input;
+  double inputTimer;
 
   m_treatment = 0;
     
@@ -43,11 +43,14 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
 				   const string nFInTum,
 				   const string nFInVes,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 0, TISSUEROW*TISSUECOL*TISSUELAYER){
+  Model(DESS, 0, 0, 0, 2, TISSUEROW*TISSUECOL*TISSUELAYER){
   int k(0);
   int selInitPhase;
-  double doubTime, input;
-
+  double doubTime;
+  double inputPO2, inputTimer, inputTum, inputVes;
+  ifstream fInPO2(nFInPO2.c_str());
+  ifstream fInTum(nFInTum.c_str());
+  ifstream fInVes(nFInVes.c_str());
   m_treatment = treatment;
   
   //Creation of the cells composing the tissue model
@@ -85,76 +88,77 @@ Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
     }
   }
   
-  //Initialization of the PO2
-  k = 0;
-  ifstream fInPO2 (nFInPO2.c_str());
-  if(fInPO2.is_open()){
-    while(fInPO2>>input){
-      ((ProstCell *)m_comp->at(k))->setInPO2(input);
+  //Initialization of the PO2 and cells state
+  
+  if(fInPO2.is_open() == 0){
+    cout << "An error occurred while opening initial PO2 data file"
+	 << endl;
+  }
+  else if(fInTum.is_open() == 0){
+    cout << "An error occurred while opening initial tumor" <<
+      "data file" << endl;
+  }
+  else if(fInVes.is_open() == 0){
+    cout << "An error occurred while opening initial vessel" <<
+      "data file" << endl;
+  }
+  else{
+    srand(time(NULL));
+    for(int k(0); k < m_numComp; k++){
+      if(fInPO2 >> inputPO2){
+	((ProstCell *)m_comp->at(k))->setInPO2(inputPO2);
+      }
+      else{
+	cout << "Insufficient data in PO2 file"<<endl;
+	break;
+      }
+      if(fInTum >> inputTum){
+	((ProstCell *)m_comp->at(k))->setInTum(inputTum);
+      }
+      else{
+	cout << "Insufficient data in tumor file" << endl;
+	break;
+      }
+      if(fInVes >> inputVes){
+	if(inputTum && inputVes){
+	  cout << "Conflict between initial data. Cell "<< k <<
+	    " is both tumor and vessel" << endl;
+	  break;
+	}
+	else{
+	  ((ProstCell *)m_comp->at(k))->setInVes(inputVes);
+	}
+      }
+      else{
+	cout << "Insufficient data in vessel file" << endl;
+	break;
+      }
+      
+      doubTime = ((ProstCell *)m_comp->at(k))->getDoubTime();
+      selInitPhase = rand() % 200;
+      if(selInitPhase < 120){
+	inputTimer = rand() % (int)(0.55 * doubTime);
+      }
+      else if(selInitPhase < 170){
+	inputTimer = (int)(0.55 * doubTime) +
+	  rand() % (int)(0.2 * doubTime);
+      }
+      else if(selInitPhase < 185){
+	inputTimer = (int)(0.75 * doubTime) +
+	  rand() % (int)(0.15 * doubTime);
+      }
+      else{
+	inputTimer = (int)(0.9 * doubTime) +
+	  rand() % (int)(0.1 * doubTime);
+      }
+      ((ProstCell *)m_comp->at(k))->setInTimer(inputTimer);
       (m_comp->at(k))->initModel();
-      k++;
+      ((ProstCell *)m_comp->at(k))->setInTum(0.0);
+      ((ProstCell *)m_comp->at(k))->setInVes(0.0);
     }
     fInPO2.close();
-  }
-  else{
-    cout<<"An error occurred while opening initial PO2 data file"
-	<<endl;
-  }
-  
-  //Initialization of the tumor cells
-  k = 0*TISSUEROW*TISSUECOL;
-  ifstream fInTum (nFInTum.c_str());
-  if(fInTum.is_open()){
-    while(fInTum>>input){
-      ((ProstCell *)m_comp->at(k))->setInTumor(input);
-      (m_comp->at(k))->initModel();
-      k++;
-    }
     fInTum.close();
-  }
-  else{
-    cout<<"An error occurred while opening initial tumor data file"
-	<<endl;
-  }
-
-  //Initialization of vessels
-  k = 0;
-  ifstream fInVes;
-  for(int l=0;l<TISSUELAYER;l++){
-    fInVes.open(nFInVes.c_str());
-    if(fInVes.is_open()){
-      while(fInVes>>input){
-	((ProstCell *)m_comp->at(k))->setInVes(input);
-	(m_comp->at(k))->initModel();
-	k++;
-      }
-      fInVes.close();
-    }
-    else{
-      cout<<"An error occurred while opening initial"<<
-	"vessel data file"<<endl;
-    }
-  }
-  
-  //Initialization of timer
-  srand(time(NULL));
-  for(k=0;k<m_numComp;k++){
-    doubTime = ((ProstCell *)m_comp->at(k))->getDoubTime();
-    selInitPhase = rand()%200;
-    if(selInitPhase<120){
-      input = rand()%(int)(0.55*doubTime);
-    }
-    else if(selInitPhase<170){
-      input = (int)(0.55*doubTime) + rand()%(int)(0.2*doubTime);
-    }
-    else if(selInitPhase<185){
-      input = (int)(0.75*doubTime) + rand()%(int)(0.15*doubTime);
-    }
-    else{
-      input = (int)(0.9*doubTime) + rand()%(int)(0.1*doubTime);
-    }
-    ((ProstCell *)m_comp->at(k))->setInTimer(input);
-    (m_comp->at(k))->initModel();
+    fInVes.close();
   }
 }
 
@@ -164,7 +168,7 @@ Gen3DProstTissue::~Gen3DProstTissue(){
 
 
 int Gen3DProstTissue::calcModelOut(){
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->calcModelOut();
   }
   return 0;
@@ -172,23 +176,27 @@ int Gen3DProstTissue::calcModelOut(){
 
 
 int Gen3DProstTissue::initModel(const double DT){
-  cout<<"Total number of cells = "<<m_numComp<<endl;
-  cout<<"Initial number of cells at G1 = "<<getNumG1()<<endl;
-  cout<<"Initial number of cells at S = "<<getNumS()<<endl;
-  cout<<"Initial number of cells at G2 = "<<getNumG2()<<endl;
-  cout<<"Initial number of cells at M = "<<getNumM()<<endl;
-  cout<<"Initial number of living cells = "<<getNumAlive()<<endl;
-  cout<<"Initial number of tumor cells = "<<getNumTumor()<<endl;
-  cout<<"Initial number of vessels = "<<getNumVes()<<endl;
-  cout<<"Initial number of dead cells = "<<getNumDead()<<endl;
-  cout<<"---------------------------------------------"<<endl;
+  PAR_INIT_NUM_TUM = getNumTum();
+  PAR_NUM_SESSION = 0.0;
+  m_flag = 0;
+  cout << "Total number of cells = " << m_numComp << endl;
+  cout << "Initial number of cells at G1 = " << getNumG1() << endl;
+  cout << "Initial number of cells at S = " << getNumS() << endl;
+  cout << "Initial number of cells at G2 = "<< getNumG2() << endl;
+  cout << "Initial number of cells at M = "<< getNumM() << endl;
+  cout << "Initial number of living cells = "
+       << getNumAlive() << endl;
+  cout << "Initial number of tumor cells = " << getNumTum() << endl;
+  cout << "Initial number of vessels = " << getNumVes() << endl;
+  cout << "Initial number of dead cells = " << getNumDead() << endl;
+  cout << "---------------------------------------------" << endl;
   return 0;
 }
 
 
 //It does nothing for the moment
 int Gen3DProstTissue::startModel(){
-  for (int k=0;k<m_numComp;k++){
+  for (int k(0) ;k < m_numComp; k++){
     (m_comp->at(k))->startModel();
   }
   return 0;
@@ -196,18 +204,19 @@ int Gen3DProstTissue::startModel(){
 
 
 int Gen3DProstTissue::terminateModel(){
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->terminateModel();
   }
- 
-  cout<<"Final number of cells at G1 = "<<getNumG1()<<endl;
-  cout<<"Final number of cells at S = "<<getNumS()<<endl;
-  cout<<"Final number of cells at G2 = "<<getNumG2()<<endl;
-  cout<<"Final number of cells at M = "<<getNumM()<<endl;
-  cout<<"Final number of living cells = "<<getNumAlive()<<endl;
-  cout<<"Final number of tumor cells = "<<getNumTumor()<<endl;
-  cout<<"Final number of vessels = "<<getNumVes()<<endl;
-  cout<<"Final number of dead cells = "<<getNumDead()<<endl;
+  cout << "---------------------------------------------" << endl;
+  cout << "Final number of cells at G1 = " << getNumG1() << endl;
+  cout << "Final number of cells at S = " << getNumS() << endl;
+  cout << "Final number of cells at G2 = " << getNumG2() << endl;
+  cout << "Final number of cells at M = " << getNumM() << endl;
+  cout << "Final number of living cells = "
+       << getNumAlive() << endl;
+  cout << "Final number of tumor cells = " << getNumTum() << endl;
+  cout << "Final number of vessels = " << getNumVes() << endl;
+  cout << "Final number of dead cells = "<< getNumDead() << endl;
   
   return 0;
 }
@@ -215,16 +224,55 @@ int Gen3DProstTissue::terminateModel(){
 
 int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
-  for(int k=0;k<m_numComp;k++){
+  int i;
+  for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->updateModel(currentTime, DT);
   }
+
+  if(fmod(currentTime, m_treatment->getInterval()) == 0){
+      i = currentTime / m_treatment->getInterval();
+      if((m_treatment->getSchedule()).at(i)){
+	PAR_NUM_SESSION += 1.0;
+      }
+  }
+  
+  if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
+      cout << "Total dose needed to kill 50% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
+      cout << "Total dose needed to kill 80% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
+      cout << "Total dose needed to kill 90% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
+      cout << "Total dose needed to kill 95% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
+      cout << "Total dose needed to kill 99% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
+      cout << "Total dose needed to kill 99.9% of tumor cells = " <<
+	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      m_flag++;
+    }
   return 0;
 }
 
 
 int Gen3DProstTissue::getNumAlive() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getAlive()){
       count++;
     }
@@ -235,7 +283,7 @@ int Gen3DProstTissue::getNumAlive() const{
 
 int Gen3DProstTissue::getNumDead() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getDead()){
       count++;
     }
@@ -246,7 +294,7 @@ int Gen3DProstTissue::getNumDead() const{
 
 int Gen3DProstTissue::getNumG1() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getG1()){
       count++;
     }
@@ -257,7 +305,7 @@ int Gen3DProstTissue::getNumG1() const{
 
 int Gen3DProstTissue::getNumG2() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getG2()){
       count++;
     }
@@ -268,7 +316,7 @@ int Gen3DProstTissue::getNumG2() const{
 
 int Gen3DProstTissue::getNumM() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getM()){
       count++;
     }
@@ -279,7 +327,7 @@ int Gen3DProstTissue::getNumM() const{
 
 int Gen3DProstTissue::getNumS() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getS()){
       count++;
     }
@@ -288,10 +336,10 @@ int Gen3DProstTissue::getNumS() const{
 }
 
 
-int Gen3DProstTissue::getNumTumor() const{
+int Gen3DProstTissue::getNumTum() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
-    if(((ProstCell *)m_comp->at(k))->getTumor()){
+  for(int k(0); k < m_numComp; k++){
+    if(((ProstCell *)m_comp->at(k))->getTum()){
       count++;
     }
   }
@@ -301,7 +349,7 @@ int Gen3DProstTissue::getNumTumor() const{
 
 int Gen3DProstTissue::getNumVes() const{
   int count(0);
-  for(int k=0;k<m_numComp;k++){
+  for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getVes()){
       count++;
     }

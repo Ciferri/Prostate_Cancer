@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 			       treatment);
   sim = new Simulator();
   simTime = treatment->getDuration();
-  //simTime = 2016;
+  //simTime = 1008;
   sim->setModel(model);
   sim->start(simTime);
   return EXIT_SUCCESS;
