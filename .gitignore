@@ -1,5 +1,7 @@
 CMakeFiles/
 build/
+html/
+latex/
 *~
 *.avi
 *.dat
