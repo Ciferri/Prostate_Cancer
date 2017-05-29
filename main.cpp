@@ -36,9 +36,6 @@ int main(int argc, char *argv[]){
   nFInVes = "inVes.dat";
   nFInPO2 = "inPO2.dat";
 
-  treatment = new Treatment();
-  cout<<treatment<<endl;
-  //treatment = 0;
   ifstream fTissueDim(nFTissueDim.c_str());
   if(fTissueDim.is_open()){
     fTissueDim >> nrow;
@@ -55,6 +52,10 @@ int main(int argc, char *argv[]){
     cout << "An error occurred while opening tissue dimensions file"
 	 << endl;
   }
+  
+  treatment = new Treatment();
+  cout<<treatment<<endl;
+  //treatment = 0;
   model = new Gen3DProstTissue(nrow, ncol, nlayer, nFInPO2, nFInTum,
 			       nFInVes, treatment);
   sim = new Simulator();
