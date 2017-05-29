@@ -6,7 +6,6 @@ latex/
 *.avi
 *.dat
 *.o
-*.m
 *.png
 *.txt
 cmake_install.cmake
