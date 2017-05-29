@@ -17,9 +17,12 @@
 
 using namespace std;
 
-Gen3DProstTissue::Gen3DProstTissue() :
-  Model(DESS, 0, 0, 0, 6, TISSUEROW*TISSUECOL*TISSUELAYER){
-  double input;
+Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
+				   const int nlayer) :
+  Model(DESS, 0, 0, 0, 6, nrow*ncol*nlayer){
+  m_nrow = nrow;
+  m_ncol = ncol;
+  m_nlayer = nlayer;
   
   for(int k(0); k < m_numComp; k++){
     m_comp->at(k) = new ProstCell(this);
@@ -31,12 +34,18 @@ Gen3DProstTissue::Gen3DProstTissue() :
 }
 
 
-Gen3DProstTissue::Gen3DProstTissue(const string nFInPO2,
+Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
+				   const int nlayer,
+				   const string nFInPO2,
 				   const string nFInTum,
 				   const string nFInVes,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 6, TISSUEROW*TISSUECOL*TISSUELAYER){
+  Model(DESS, 0, 0, 0, 6, nrow*ncol*nlayer){
   double inputPO2, inputTum, inputVes;
+
+  m_nrow = nrow;
+  m_ncol = ncol;
+  m_nlayer = nlayer;
   
   for(int k(0); k < m_numComp; k++){
     m_comp->at(k) = new ProstCell(this);
@@ -162,7 +171,7 @@ int Gen3DProstTissue::terminateModel(){
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->terminateModel();
   }
- 
+  cout << "---------------------------------------------" << endl;
   cout << "Final number of living cells = " <<
     getNumAlive() << endl;
   cout << "Final number of tumor cells = " << getNumTum() << endl;
@@ -183,7 +192,7 @@ int Gen3DProstTissue::updateModel(const double currentTime,
   numTumor = getNumTum();
   for(int i(numTumor); i < (int)PAR_NUM_TUMOR; i++){
     if(m_tumorEdge->size() > 0){
-      m = rand()%m_tumorEdge->size();
+      m = rand() % m_tumorEdge->size();
       k = m_tumorEdge->at(m);
       setInTum(k, 1.0);
       (m_comp->at(k))->updateModel();
@@ -255,7 +264,7 @@ int Gen3DProstTissue::updateModel(const double currentTime,
     PAR_NUM_DEAD -= PAR_NUM_DEAD * PAR_RF;
   
     for(int i((int)PAR_NUM_DEAD + 1); i < numDead; i++){
-      m = rand()%m_deadCells->size();
+      m = rand() % m_deadCells->size();
       k = m_deadCells->at(m);
       setInAlive(k, 1.0);
       (m_comp->at(k))->updateModel();
@@ -356,10 +365,10 @@ Treatment * Gen3DProstTissue::getTreatment() const{
 
 int *Gen3DProstTissue::kToXyz(const int k) const{
   int *tab= new int[3];
-  if(k > -1 && k < TISSUEROW * TISSUECOL * TISSUELAYER){
-    tab[0] = (k % (TISSUEROW * TISSUECOL)) / TISSUECOL;
-    tab[1] = (k % (TISSUEROW * TISSUECOL)) % TISSUECOL;
-    tab[2] = k / (TISSUEROW * TISSUECOL);
+  if(k > -1 && k < m_nrow * m_ncol * m_nlayer){
+    tab[0] = (k % (m_nrow * m_ncol)) / m_ncol;
+    tab[1] = (k % (m_nrow * m_ncol)) % m_ncol;
+    tab[2] = k / (m_nrow * m_ncol);
   }
   else{
     tab[0] = -1;
@@ -518,9 +527,9 @@ void Gen3DProstTissue::removeFromEdge(const int k){
 
 int Gen3DProstTissue::xyzTok(const int x, const int y,
 			     const int z) const{
-  if(x > -1 && x < TISSUEROW && y > -1 && y < TISSUECOL && z > -1 &&
-     z < TISSUELAYER){
-    return x * TISSUECOL + y + z * TISSUEROW * TISSUECOL;
+  if(x > -1 && x < m_nrow && y > -1 && y < m_ncol && z > -1 &&
+     z < m_nlayer){
+    return x * m_ncol + y + z * m_nrow * m_ncol;
   }
   else{
     return -1;

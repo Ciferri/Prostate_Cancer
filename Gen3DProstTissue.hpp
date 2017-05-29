@@ -16,10 +16,6 @@
 #include "ProstCell.hpp"
 #include "Treatment.hpp"
 
-#define TISSUEROW 58
-#define TISSUECOL 94
-#define TISSUELAYER 1
-
 //Internal parameters
 #define PAR_INIT_NUM_TUMOR m_param->at(0)
 #define PAR_NUM_DEAD       m_param->at(1)
@@ -30,8 +26,10 @@
 
 class Gen3DProstTissue : public Model {
  public:
-  Gen3DProstTissue();
-  Gen3DProstTissue(const std::string nFInPO2,
+  Gen3DProstTissue(const int nrow, const int ncol,
+		   const int nlayer);
+  Gen3DProstTissue(const int nrow, const int ncol, const int nlayer,
+		   const std::string nFInPO2,
 		   const std::string nFInTum,
 		   const std::string nFInVes,
 		   Treatment *const treatment);
@@ -61,8 +59,8 @@ class Gen3DProstTissue : public Model {
   int xyzTok(const int x, const int y, const int z) const;
 
 protected:
+  int m_ncol, m_nlayer, m_nrow;
   int m_flag;
-  Model *m_tissue[TISSUEROW][TISSUECOL][TISSUELAYER];
   Treatment *m_treatment;
   std::vector<int> *m_deadCells;
   std::vector<int> *m_tumorEdge;
