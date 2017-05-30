@@ -19,7 +19,7 @@ public :
   Model(const modelType type, const int numIn, const int numSt,
 	const int numOut, const int numParam, const int numComp);
   virtual ~Model();
-  virtual int calcModelOut()=0;
+  virtual int calcModelOut() = 0;
   virtual int initModel(const double DT = 0) = 0;
   virtual int updateModel(const double currentTime = 0,
 			  const double DT = 0 ) = 0;
