@@ -1,6 +1,6 @@
 clear all
 close all
-
+warning('off')
 pkg load image
 
 load('out.dat');
