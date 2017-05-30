@@ -16,33 +16,39 @@ using namespace std;
 
 ProstCell::ProstCell() : Model(DESS, 5, 4, 1, 8, 0){
   ST_ALIVE = 1.0;		
-  ST_DEAD = 0.0;
-  ST_TUMOR = 0.0;		
-  ST_VES = 0.0;
+  ST_DEAD  = 0.0;
+  ST_TUM   = 0.0;		
+  ST_VES   = 0.0;
+
   PAR_DOUBTIME = 1008; //h 
   PAR_DEADTIME = 234; //h
-  PAR_M = 3.0; //adim.
-  PAR_K = 3.0; //mmHg
-  PAR_PO2 = 3.5; //mmHg
+
+  PAR_M     = 3.0; //adim.
+  PAR_K     = 3.0; //mmHg
+  PAR_PO2   = 3.5; //mmHg
   PAR_ALPHA = 0; //Gy^-1
-  PAR_BETA = 0; //Gy^-2
+  PAR_BETA  = 0; //Gy^-2
+  
   m_parent = 0;
 }
 
 ProstCell::ProstCell(Model *const parent) :
   Model(DESS, 5, 4, 1, 8, 0){
   ST_ALIVE = 1.0;		
-  ST_DEAD = 0.0;
-  ST_TUMOR = 0.0;		
-  ST_VES = 0.0;
+  ST_DEAD  = 0.0;
+  ST_TUM   = 0.0;		
+  ST_VES   = 0.0;
+  
   PAR_DOUBTIME = 1008; //h
   PAR_DEADTIME = 234; //h
-  PAR_M = 3.0; //adim.
-  PAR_K = 3.0; //mmHg
-  PAR_PO2 = 3.5; //mmHg
+
+  PAR_M     = 3.0; //adim.
+  PAR_K     = 3.0; //mmHg
+  PAR_PO2   = 3.5; //mmHg
   PAR_ALPHA = 0; //Gy^-1
-  PAR_BETA = 0; //Gy^-2
-  m_parent = parent;
+  PAR_BETA  = 0; //Gy^-2
+  
+  m_parent  = parent;
 }
 
 
@@ -51,7 +57,7 @@ ProstCell::~ProstCell(){
 
 
 int ProstCell::calcModelOut(){
-  OUT_STATE = ST_ALIVE + 2*ST_TUMOR + 3*ST_VES + 4*ST_DEAD;	    
+  OUT_STATE = ST_ALIVE + 2*ST_TUM + 3*ST_VES + 4*ST_DEAD;	    
   return 0;
 }
 
@@ -73,27 +79,27 @@ int ProstCell::terminateModel(){
 
 int ProstCell::updateModel(const double currentTime,
 			   const double DT){
-  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUMOR && !IN_DEAD &&
+  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUM && !IN_DEAD &&
     !IN_VES;   
-  ST_TUMOR = (ST_TUMOR || IN_TUMOR) && !ST_ALIVE && !IN_DEAD;
-  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUMOR;
-  ST_VES = (ST_VES || IN_VES) && !IN_DEAD;
+  ST_TUM   = (ST_TUM || IN_TUM) && !ST_ALIVE && !IN_DEAD;
+  ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUM;
+  ST_VES   = (ST_VES || IN_VES) && !IN_DEAD;
 
   if(ST_ALIVE){
     PAR_ALPHA = 0;
-    PAR_BETA = 0;
+    PAR_BETA  = 0;
   }
   if(ST_DEAD){
     PAR_ALPHA = 0;
-    PAR_BETA = 0;
+    PAR_BETA  = 0;
   }
   if(ST_VES){
     PAR_ALPHA = 0;
-    PAR_BETA = 0;
+    PAR_BETA  = 0;
   }
-  if(ST_TUMOR){
+  if(ST_TUM){
     PAR_ALPHA = 0.15;
-    PAR_BETA = 0.048;
+    PAR_BETA  = 0.048;
   }
   
   PAR_PO2 = IN_PO2;
@@ -104,7 +110,7 @@ int ProstCell::updateModel(const double currentTime,
 double ProstCell::calcOER() const{
   double OER;
   
-  OER = (PAR_M * PAR_PO2 + PAR_K)/(PAR_PO2 + PAR_K); //mmHg
+  OER = (PAR_M * PAR_PO2 + PAR_K) / (PAR_PO2 + PAR_K); //mmHg
   return OER;
 }
 
@@ -114,9 +120,9 @@ double ProstCell::calcSF() const{
   
   fraction = ((Gen3DProstTissue *)m_parent)->getTreatment()->
     getFraction();
-  SF = exp(-PAR_ALPHA/PAR_M * fraction * calcOER() -
-	   PAR_BETA/(PAR_M*PAR_M) * fraction*fraction *
-	   calcOER()*calcOER());
+  SF = exp(-PAR_ALPHA / PAR_M * fraction * calcOER() -
+	   PAR_BETA / (PAR_M * PAR_M) * fraction * fraction *
+	   calcOER() * calcOER());
 }
 
 
@@ -145,8 +151,8 @@ double ProstCell::getInAlive() const{
 }
 
 
-double ProstCell::getTumor() const{
-  return ST_TUMOR;
+double ProstCell::getTum() const{
+  return ST_TUM;
 }
 
 
@@ -171,8 +177,8 @@ void ProstCell::setInPO2(const double input){
 }
 
 
-void ProstCell::setInTumor(const double input){
-  IN_TUMOR = input;
+void ProstCell::setInTum(const double input){
+  IN_TUM = input;
 }
 
 

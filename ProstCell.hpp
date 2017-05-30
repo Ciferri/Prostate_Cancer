@@ -14,16 +14,16 @@
 #include "Treatment.hpp"
 
 //Inputs
-#define IN_TUMOR      m_in->at(0)
-#define IN_VES        m_in->at(1)
+#define IN_ALIVE      m_in->at(0)
+#define IN_TUM        m_in->at(1)
 #define IN_DEAD       m_in->at(2)
-#define IN_ALIVE      m_in->at(3)
+#define IN_VES        m_in->at(3)
 #define IN_PO2        m_in->at(4)
 
 //State variables
 #define ST_ALIVE      m_st->at(0)
-#define ST_DEAD       m_st->at(1)
-#define ST_TUMOR      m_st->at(2)
+#define ST_TUM        m_st->at(1)
+#define ST_DEAD       m_st->at(2)
 #define ST_VES        m_st->at(3)
 
 //Outputs
@@ -57,12 +57,12 @@ public :
   double getDoubTime() const;
   double getInAlive() const;
   int getOutState() const;
-  double getTumor() const;
+  double getTum() const;
   double getVes() const;
   void setInAlive(const double input);
   void setInDead(const double input);
   void setInPO2(const double input);
-  void setInTumor(const double input);
+  void setInTum(const double input);
   void setInVes(const double input);
 };
 #endif

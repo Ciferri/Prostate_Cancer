@@ -19,16 +19,16 @@ using namespace std;
 
 Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const int nlayer) :
-  Model(DESS, 0, 0, 0, 6, nrow*ncol*nlayer){
-  m_nrow = nrow;
-  m_ncol = ncol;
+  Model(DESS, 0, 0, 0, 6, nrow * ncol * nlayer){
+  m_nrow   = nrow;
+  m_ncol   = ncol;
   m_nlayer = nlayer;
   
   for(int k(0); k < m_numComp; k++){
     m_comp->at(k) = new ProstCell(this);
     m_numOut += (m_comp->at(k))->getNumOut();
   }  
-  m_tumorEdge = new vector<int>(0,0);
+  m_tumEdge   = new vector<int>(0,0);
   m_deadCells = new vector<int>(0,0);
   m_treatment = 0;
 }
@@ -40,9 +40,13 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const string nFInTum,
 				   const string nFInVes,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 6, nrow*ncol*nlayer){
-  double inputPO2, inputTum, inputVes;
+  Model(DESS, 0, 0, 0, 6, nrow * ncol * nlayer){
 
+  double inputPO2, inputTum, inputVes;
+  ifstream fInPO2(nFInPO2.c_str());
+  ifstream fInTum(nFInTum.c_str());
+  ifstream fInVes(nFInVes.c_str());
+  
   m_nrow = nrow;
   m_ncol = ncol;
   m_nlayer = nlayer;
@@ -52,15 +56,11 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
     m_numOut += (m_comp->at(k))->getNumOut();
   }
   
-  m_tumorEdge = new vector<int>(0,0);
+  m_tumEdge = new vector<int>(0,0);
   m_deadCells = new vector<int>(0,0);
 
   //Initialization of the PO2 and cells state
-  
-  ifstream fInPO2(nFInPO2.c_str());
-  ifstream fInTum(nFInTum.c_str());
-  ifstream fInVes(nFInVes.c_str());
-  
+
   if(fInPO2.is_open() == 0){
     cout << "An error occurred while opening initial PO2 data file"
 	 << endl;
@@ -117,7 +117,7 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 
 
 Gen3DProstTissue::~Gen3DProstTissue(){
-  delete m_tumorEdge;
+  delete m_tumEdge;
   delete m_deadCells;
 }
 
@@ -136,8 +136,8 @@ int Gen3DProstTissue::initModel(const double DT){
   doubTime = ((ProstCell *)m_comp->at(0))->getDoubTime();
   deadTime = ((ProstCell *)m_comp->at(0))->getDeadTime();
   PAR_PF = pow(2.0, DT / doubTime);
-  PAR_INIT_NUM_TUMOR = getNumTum();
-  PAR_NUM_TUMOR = PAR_INIT_NUM_TUMOR;
+  PAR_INIT_NUM_TUM = getNumTum();
+  PAR_NUM_TUM = PAR_INIT_NUM_TUM;
   PAR_RF = 1.0 - pow(2.0, -DT / deadTime);
   PAR_NUM_DEAD = getNumDead();
   PAR_NUM_SESSION = 0.0;
@@ -151,7 +151,7 @@ int Gen3DProstTissue::initModel(const double DT){
   cout << "Initial number of vessels = " << getNumVes() << endl;
   cout << "Initial number of dead cells = " << getNumDead() << endl;
   cout << "Initial tumor edge size = " <<
-    m_tumorEdge->size() << endl;
+    m_tumEdge->size() << endl;
   cout << "---------------------------------------------" << endl;
   
   return 0;
@@ -177,7 +177,7 @@ int Gen3DProstTissue::terminateModel(){
   cout << "Final number of tumor cells = " << getNumTum() << endl;
   cout << "Final number of vessels = " << getNumVes() << endl;
   cout << "Final number of dead cells = " << getNumDead() << endl;
-  cout << "Final tumor edge size = " << m_tumorEdge->size() << endl;
+  cout << "Final tumor edge size = " << m_tumEdge->size() << endl;
   
   return 0;
 }
@@ -186,14 +186,14 @@ int Gen3DProstTissue::terminateModel(){
 int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
   int k, m;
-  int numTumor, numDead;
+  int numTum, numDead;
   
-  PAR_NUM_TUMOR *= PAR_PF;
-  numTumor = getNumTum();
-  for(int i(numTumor); i < (int)PAR_NUM_TUMOR; i++){
-    if(m_tumorEdge->size() > 0){
-      m = rand() % m_tumorEdge->size();
-      k = m_tumorEdge->at(m);
+  PAR_NUM_TUM *= PAR_PF;
+  numTum = getNumTum();
+  for(int i(numTum); i < (int)PAR_NUM_TUM; i++){
+    if(m_tumEdge->size() > 0){
+      m = rand() % m_tumEdge->size();
+      k = m_tumEdge->at(m);
       setInTum(k, 1.0);
       (m_comp->at(k))->updateModel();
       setInTum(k, 0.0);
@@ -205,10 +205,10 @@ int Gen3DProstTissue::updateModel(const double currentTime,
       int i(currentTime / m_treatment->getInterval());
 
       if((m_treatment->getSchedule()).at(i)){
-	int preTumorSize;
+	int preTumSize;
 	double n;
 
-	preTumorSize = getNumTum();
+	preTumSize = getNumTum();
 	for(int k(0); k < m_numComp; k++){
 	  n = (double)rand() / (double)(RAND_MAX);
 	  if(((ProstCell *)m_comp->at(k))->calcSF() < n){
@@ -218,43 +218,38 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 	  }
 	}
 	
-	PAR_NUM_TUMOR -= preTumorSize - getNumTum();
-	PAR_NUM_DEAD += preTumorSize - getNumTum();
+	PAR_NUM_TUM -= preTumSize - getNumTum();
+	PAR_NUM_DEAD += preTumSize - getNumTum();
 	PAR_NUM_SESSION += 1.0;
       }
     }
   
-    if(getNumTum() / PAR_INIT_NUM_TUMOR < 0.5 && m_flag == 0){
+    if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
       cout << "Total dose needed to kill 50% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
     }
-    else if(getNumTum() / PAR_INIT_NUM_TUMOR < 0.2 &&
-	    m_flag == 1){
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
       cout << "Total dose needed to kill 80% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
     }
-    else if(getNumTum() / PAR_INIT_NUM_TUMOR < 0.1 &&
-	    m_flag == 2){
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
       cout << "Total dose needed to kill 90% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
     }
-    else if((getNumTum()) / PAR_INIT_NUM_TUMOR < 0.05 &&
-	    m_flag == 3){
+    else if((getNumTum()) / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
       cout << "Total dose needed to kill 95% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
     }
-    else if(getNumTum() / PAR_INIT_NUM_TUMOR < 0.01 &&
-	    m_flag == 4){
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
       cout << "Total dose needed to kill 99% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
     }
-    else if(getNumTum() / PAR_INIT_NUM_TUMOR < 0.001 &&
-	    m_flag == 5){
+    else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
       cout << "Total dose needed to kill 99.9% of tumor cells = " <<
 	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
       m_flag++;
@@ -287,10 +282,10 @@ void Gen3DProstTissue::addToEdge(const int x, const int y,
  
   k = xyzTok(x, y, z);
   if(k != -1){
-    for(int i(0); i < m_tumorEdge->size(); i++){
-      if(k == m_tumorEdge->at(i)){
+    for(int i(0); i < m_tumEdge->size(); i++){
+      if(k == m_tumEdge->at(i)){
 	notInEdge = false;
-	i = m_tumorEdge->size();
+	i = m_tumEdge->size();
       }
     }
     
@@ -298,7 +293,7 @@ void Gen3DProstTissue::addToEdge(const int x, const int y,
 	     ((ProstCell *)m_comp->at(k))->getInAlive());
     
     if(notInEdge && alive){
-      m_tumorEdge->push_back(k);
+      m_tumEdge->push_back(k);
     }
   }
 }
@@ -339,7 +334,7 @@ int Gen3DProstTissue::getNumDead() const{
 int Gen3DProstTissue::getNumTum() const{
   int count(0);
   for(int k(0); k<m_numComp; k++){
-    if(((ProstCell *)m_comp->at(k))->getTumor()){
+    if(((ProstCell *)m_comp->at(k))->getTum()){
       count++;
     }
   }
@@ -398,7 +393,7 @@ void Gen3DProstTissue::setInAlive(const int k, const double input){
 	  if(i != 0 || j != 0 || l != 0){
 	    m = xyzTok(x + i, y + j, z + l);
 	    if(m != -1){
-	      if(((ProstCell *)m_comp->at(m))->getTumor()){
+	      if(((ProstCell *)m_comp->at(m))->getTum()){
 		addToEdge(x, y, z);
 		i = 2;
 		j = 2;
@@ -447,7 +442,7 @@ void Gen3DProstTissue::setInDead(const int k, const double input){
 		      if(n != -1){
 			nTiNCSDC = nTiNCSDC &&
 			  !(((ProstCell *)m_comp->at(n))
-			    ->getTumor());		       
+			    ->getTum());		       
 		      }
 		    }
 		  }
@@ -469,7 +464,7 @@ void Gen3DProstTissue::setInTum(const int k, const double input){
   int x, y, z;
   int *coordxyz;
   
-  ((ProstCell *)m_comp->at(k))->setInTumor(input);
+  ((ProstCell *)m_comp->at(k))->setInTum(input);
   
   if(input){
     removeFromEdge(k);
@@ -513,13 +508,13 @@ void Gen3DProstTissue::removeFromDeadCells(const int k){
 
 
 void Gen3DProstTissue::removeFromEdge(const int k){
-  for(int i(0); i < m_tumorEdge->size(); i++){
-    if(m_tumorEdge->at(i) == k){
-      for(int ii(i); ii < m_tumorEdge->size()-1; ii++){
-	m_tumorEdge->at(ii) = m_tumorEdge->at(ii + 1);
+  for(int i(0); i < m_tumEdge->size(); i++){
+    if(m_tumEdge->at(i) == k){
+      for(int ii(i); ii < m_tumEdge->size()-1; ii++){
+	m_tumEdge->at(ii) = m_tumEdge->at(ii + 1);
       }
-      m_tumorEdge->pop_back();
-      i=m_tumorEdge->size();
+      m_tumEdge->pop_back();
+      i=m_tumEdge->size();
     }
   }
 }

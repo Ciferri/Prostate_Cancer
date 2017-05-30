@@ -17,12 +17,12 @@
 #include "Treatment.hpp"
 
 //Internal parameters
-#define PAR_INIT_NUM_TUMOR m_param->at(0)
-#define PAR_NUM_DEAD       m_param->at(1)
-#define PAR_NUM_SESSION    m_param->at(2)
-#define PAR_NUM_TUMOR      m_param->at(3)
-#define PAR_PF             m_param->at(4)
-#define PAR_RF             m_param->at(5)
+#define PAR_INIT_NUM_TUM m_param->at(0)
+#define PAR_NUM_DEAD     m_param->at(1)
+#define PAR_NUM_SESSION  m_param->at(2)
+#define PAR_NUM_TUM      m_param->at(3)
+#define PAR_PF           m_param->at(4)
+#define PAR_RF           m_param->at(5)
 
 class Gen3DProstTissue : public Model {
  public:
@@ -63,7 +63,7 @@ protected:
   int m_flag;
   Treatment *m_treatment;
   std::vector<int> *m_deadCells;
-  std::vector<int> *m_tumorEdge;
+  std::vector<int> *m_tumEdge;
 };
 
 #endif
