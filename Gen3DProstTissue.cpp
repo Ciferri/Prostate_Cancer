@@ -149,7 +149,11 @@ int Gen3DProstTissue::initModel(const double DT){
   cout << "Initial number of living cells = " <<
     getNumAlive() << endl;
   cout << "Initial number of tumor cells = " << getNumTum() << endl;
+  cout << "Initial tumor density: " <<
+    (double)getNumTum() / (double)m_numComp * 100.0 << endl;
   cout << "Initial number of vessels = " << getNumVes() << endl;
+  cout << "Initial vascular density: " <<
+    (double)getNumVes() / (double)m_numComp * 100.0 << endl;
   cout << "Initial number of dead cells = " << getNumDead() << endl;
   cout << "Initial tumor edge size = " <<
     m_tumEdge->size() << endl;
