@@ -6,6 +6,7 @@
  * @date 05.19.17 
  */
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -374,6 +375,26 @@ int *Gen3DProstTissue::kToXyz(const int k) const{
 }
 
 
+void Gen3DProstTissue::removeFromDeadCells(const int k){
+  vector<int>::iterator it;
+
+  it = find(m_deadCells->begin(), m_deadCells->end(), k);
+  if(it != m_deadCells->end()){
+    m_deadCells->erase(it);
+  }
+}
+
+
+void Gen3DProstTissue::removeFromEdge(const int k){
+  vector<int>::iterator it;
+  
+  it = find(m_tumEdge->begin(), m_tumEdge->end(), k);
+  if(it != m_tumEdge->end()){
+    m_tumEdge->erase(it);
+  }   
+}
+
+
 void Gen3DProstTissue::setInAlive(const int k, const double input){
   int x, y, z;
   int m;
@@ -490,32 +511,6 @@ void Gen3DProstTissue::setInVes(const int k, const double input){
   
   if(input){
     removeFromEdge(k);
-  }
-}
-
-
-void Gen3DProstTissue::removeFromDeadCells(const int k){
-  for(int i(0); i < m_deadCells->size(); i++){
-    if(m_deadCells->at(i) == k){
-      for(int ii(i); ii < m_deadCells->size()-1; ii++){
-	m_deadCells->at(ii) = m_deadCells->at(ii + 1);
-      }
-      m_deadCells->pop_back();
-      i = m_deadCells->size();
-    }
-  }
-}
-
-
-void Gen3DProstTissue::removeFromEdge(const int k){
-  for(int i(0); i < m_tumEdge->size(); i++){
-    if(m_tumEdge->at(i) == k){
-      for(int ii(i); ii < m_tumEdge->size()-1; ii++){
-	m_tumEdge->at(ii) = m_tumEdge->at(ii + 1);
-      }
-      m_tumEdge->pop_back();
-      i=m_tumEdge->size();
-    }
   }
 }
 
