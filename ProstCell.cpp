@@ -119,20 +119,20 @@ int ProstCell::initModel(const double DT){
   }
   if(ST_TUM){
     if(ST_G1){
-      PAR_ALPHA = 0.151;
-      PAR_BETA  = 0.049;
+      PAR_ALPHA = 0.158;
+      PAR_BETA  = 0.051;
     }
     if(ST_S){
-      PAR_ALPHA = 0.131;
-      PAR_BETA  = 0.042;
+      PAR_ALPHA = 0.113;
+      PAR_BETA  = 0.037;
     }
     if(ST_G2){
-      PAR_ALPHA = 0.176;
-      PAR_BETA  = 0.057;
+      PAR_ALPHA = 0.169;
+      PAR_BETA  = 0.055;
     }
     if(ST_M){
-      PAR_ALPHA = 0.196;
-      PAR_BETA  = 0.063;
+      PAR_ALPHA = 0.189;
+      PAR_BETA  = 0.061;
     }
   }
 
@@ -190,20 +190,20 @@ int ProstCell::updateModel(const double currentTime,
   }
   if(ST_TUM){
     if(ST_G1){
-      PAR_ALPHA = 0.151;
-      PAR_BETA  = 0.049;
+      PAR_ALPHA = 0.158;
+      PAR_BETA  = 0.051;
     }
     if(ST_S){
-      PAR_ALPHA = 0.131;
-      PAR_BETA  = 0.042;
+      PAR_ALPHA = 0.113;
+      PAR_BETA  = 0.037;
     }
     if(ST_G2){
-      PAR_ALPHA = 0.176;
-      PAR_BETA  = 0.057;
+      PAR_ALPHA = 0.169;
+      PAR_BETA  = 0.055;
     }
     if(ST_M){
-      PAR_ALPHA = 0.196;
-      PAR_BETA  = 0.063;
+      PAR_ALPHA = 0.189;
+      PAR_BETA  = 0.061;
     }
   }
 
