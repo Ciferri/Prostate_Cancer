@@ -13,21 +13,22 @@
 using namespace std;
 
 Treatment::Treatment(){
-  m_fraction  = 2; //Gy
-  m_interval  = 24; //h
+  int accSession(0), i(0), numSession;
+  
+  m_fraction  = 2.0; //Gy
+  m_interval  = 24.0; //h
   m_totalDose = 80.0; //Gy
 
   //Sessions scheduled Mon-Fri
-  int accSession(0), i(0), numSession;
   numSession=(int)(m_totalDose/m_fraction);
   while(accSession<=numSession){
-    /*if((i+1)%7==6||(i+1)%7==0){
+    if((i+1)%7==6||(i+1)%7==0){
       m_schedule.push_back(false);
     }
-    else{*/
+    else{
       m_schedule.push_back(true);
       accSession++;
-      //}
+    }
     i++;
   }
 }
