@@ -141,7 +141,7 @@ int Gen3DProstTissue::initModel(const double DT){
   PAR_NUM_TUM = PAR_INIT_NUM_TUM;
   PAR_RF = 1.0 - pow(2.0, -DT / deadTime);
   PAR_NUM_DEAD = getNumDead();
-  PAR_NUM_SESSION = 0.0;
+  PAR_ACC_DOSE = 0.0;
   m_flag = 0;
   srand(time(NULL));
   
@@ -225,38 +225,38 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 	
 	PAR_NUM_TUM -= preTumSize - getNumTum();
 	PAR_NUM_DEAD += preTumSize - getNumTum();
-	PAR_NUM_SESSION += 1.0;
+	PAR_ACC_DOSE += m_treatment->getFraction();
       }
     }
   
     if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
       cout << "Total dose needed to kill 50% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
     else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
       cout << "Total dose needed to kill 80% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
     else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
       cout << "Total dose needed to kill 90% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
     else if((getNumTum()) / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
       cout << "Total dose needed to kill 95% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
     else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
       cout << "Total dose needed to kill 99% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
     else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
       cout << "Total dose needed to kill 99.9% of tumor cells = " <<
-	PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+	PAR_ACC_DOSE << endl;
       m_flag++;
     }
 

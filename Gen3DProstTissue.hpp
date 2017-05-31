@@ -19,7 +19,7 @@
 //Internal parameters
 #define PAR_INIT_NUM_TUM m_param->at(0)
 #define PAR_NUM_DEAD     m_param->at(1)
-#define PAR_NUM_SESSION  m_param->at(2)
+#define PAR_ACC_DOSE     m_param->at(2)
 #define PAR_NUM_TUM      m_param->at(3)
 #define PAR_PF           m_param->at(4)
 #define PAR_RF           m_param->at(5)
