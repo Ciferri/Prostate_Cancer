@@ -60,6 +60,7 @@ public :
 			  const double DT);
   void addToEdge(ProstCell *const cell);
   double calcOER() const;
+  double calcRF (const double DT) const;
   double calcSF() const;
   double getAlive() const;
   double getDead() const;

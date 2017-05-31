@@ -224,10 +224,11 @@ int Gen3DProstTissue::terminateModel(){
 int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
   int i;
+  
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->updateModel(currentTime, DT);
   }
-
+  
   if(fmod(currentTime, m_treatment->getInterval()) == 0){
     i = currentTime / m_treatment->getInterval();
     if((m_treatment->getSchedule()).at(i)){

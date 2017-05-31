@@ -23,7 +23,7 @@ ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 11, 0){
 
   PAR_TIMER    = 0; //h
   PAR_DOUBTIME = 1008; //h 
-  PAR_DEADTIME = 468; //h 
+  PAR_DEADTIME = 234; //h 
   PAR_LIMG1S   = 0.55 * PAR_DOUBTIME;
   PAR_LIMSG2   = 0.75 * PAR_DOUBTIME;
   PAR_LIMG2M   = 0.9 * PAR_DOUBTIME;
@@ -54,7 +54,7 @@ ProstCell::ProstCell(Model *const parent) :
 
   PAR_TIMER    = 0; //h
   PAR_DOUBTIME = 1008; //h 
-  PAR_DEADTIME = 468; //h
+  PAR_DEADTIME = 234; //h
   PAR_LIMG1S   = 0.55 * PAR_DOUBTIME;
   PAR_LIMSG2   = 0.75 * PAR_DOUBTIME;
   PAR_LIMG2M   = 0.9 * PAR_DOUBTIME;
@@ -163,6 +163,7 @@ int ProstCell::updateModel(const double currentTime,
   ST_TUM   = (ST_TUM || IN_TUM) && !ST_ALIVE && !IN_DEAD;
   ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUM;
   ST_VES   = (ST_VES || IN_VES) && !IN_DEAD;
+  setInAlive(0.0);
   setInTum(0.0);
   setInDead(0.0);
   setInVes(0.0);
@@ -227,14 +228,24 @@ int ProstCell::updateModel(const double currentTime,
 	p = (double)rand() / (double)(RAND_MAX);
 	if(calcSF() < p){
 	  setInDead (1.0);
+	  p = (double)rand() / (double)(RAND_MAX);
+	  if(p < 0.8){
+	    PAR_DEADTIME = 234; //apoptotic
+	  }
+	  else{
+	    PAR_DEADTIME = 468; //necrotic
+	  }
 	  PAR_TIMER = 0;
 	}
       }
     }
     //Resorption
-    if(ST_DEAD && PAR_TIMER > PAR_DEADTIME){
-      PAR_TIMER = 0;
-      setInAlive(1.0);
+    if(ST_DEAD){
+      p = (double)rand() / (double)(RAND_MAX);
+      if(calcRF(DT) > p){
+	PAR_TIMER = 0;
+	setInAlive(1.0);
+      }
     }
   }
   return 0;
@@ -251,6 +262,14 @@ double ProstCell::calcOER() const{
   
   OER = (PAR_M * PAR_PO2 + PAR_K) / (PAR_PO2 + PAR_K); //mmHg
   return OER;
+}
+
+
+double ProstCell::calcRF(const double DT) const{
+  double RF;
+
+  RF = 1.0 - pow(2.0, -DT / PAR_DEADTIME);
+  return RF;
 }
 
 
