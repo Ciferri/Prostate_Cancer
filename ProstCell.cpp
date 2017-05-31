@@ -156,7 +156,7 @@ int ProstCell::updateModel(const double currentTime,
 			   const double DT){
   int i;
   double p;
-  ProstCell *newTumCell (0);
+  ProstCell *newTumCell(0);
   
   ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUM && !IN_DEAD &&
     !IN_VES;   
@@ -214,10 +214,8 @@ int ProstCell::updateModel(const double currentTime,
     PAR_TIMER = 0;
     if(ST_TUM && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
       newTumCell = searchSpace();
-      if(newTumCell){
-	newTumCell->setInTum(1.0);
-	newTumCell->PAR_TIMER = 0;
-      }
+      newTumCell->setInTum(1.0);
+      newTumCell->PAR_TIMER = 0;
     }     
   }
 
@@ -341,17 +339,7 @@ ProstCell *ProstCell::searchSpace() const{
       m = 0;
     }
   }
-  
-  for(int n(0); n < edgeSize; n++){
-    if(((ProstCell *)m_edge->at(m))->ST_TUM){
-      return ((ProstCell *)m_edge->at(m))->searchSpace();
-    }
-    m++;
-    if(m == edgeSize){
-      m = 0;
-    }
-  }
-  return 0;
+  return ((ProstCell *)m_edge->at(m))->searchSpace();
 }
 
 
