@@ -15,7 +15,7 @@
 
 using namespace std;
 
-ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 11, 0){
+ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 12, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD  = 0.0;
   ST_TUM   = 0.0;		
@@ -38,15 +38,18 @@ ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 11, 0){
   PAR_PO2   = 3.5; //mmHg
   PAR_ALPHA = 0; //Gy^-1
   PAR_BETA  = 0; //Gy^-2
+
+  PAR_ACC_DOSE = 0; //Gy
   
   m_parent = 0;
   m_edge = new vector<ProstCell *>((unsigned int)0, 0);
   m_treatment = 0;
+  
 }
 
 
 ProstCell::ProstCell(Model *const parent) :
-  Model(DESS, 6, 8, 1, 11, 0){
+  Model(DESS, 6, 8, 1, 12, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD  = 0.0;
   ST_TUM   = 0.0;		
@@ -69,6 +72,8 @@ ProstCell::ProstCell(Model *const parent) :
   PAR_PO2   = 3.5; //mmHg
   PAR_ALPHA = 0; //Gy^-1
   PAR_BETA  = 0; //Gy^-2
+
+  PAR_ACC_DOSE = 0; //Gy
   
   m_parent = parent;
   m_edge = new vector<ProstCell *>((unsigned int)0, 0);
@@ -237,6 +242,7 @@ int ProstCell::updateModel(const double currentTime,
 	  }
 	  PAR_TIMER = 0;
 	}
+	PAR_ACC_DOSE += m_treatment->getFraction();
       }
     }
     //Resorption
@@ -286,6 +292,11 @@ double ProstCell::calcSF() const{
 
 double ProstCell::getAlive() const{
   return ST_ALIVE;
+}
+
+
+double ProstCell::getAccDose() const{
+  return PAR_ACC_DOSE;
 }
 
 

@@ -46,6 +46,7 @@
 #define PAR_PO2      m_param->at(8)
 #define PAR_ALPHA    m_param->at(9)
 #define PAR_BETA     m_param->at(10)
+#define PAR_ACC_DOSE m_param->at(11)
 
 class ProstCell: public Model{
 public :
@@ -63,6 +64,7 @@ public :
   double calcRF (const double DT) const;
   double calcSF() const;
   double getAlive() const;
+  double getAccDose() const;
   double getDead() const;
   double getDeadTime() const;
   double getDoubTime() const;

@@ -19,7 +19,7 @@ using namespace std;
 
 Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const int nlayer) :
-  Model(DESS, 0, 0, 0, 2, nrow * ncol * nlayer){
+  Model(DESS, 0, 0, 0, 1, nrow * ncol * nlayer){
   m_nrow   = nrow;
   m_ncol   = ncol;
   m_nlayer = nlayer;
@@ -40,7 +40,7 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const string nFInTum,
 				   const string nFInVes,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 2, nrow * ncol * nlayer){
+  Model(DESS, 0, 0, 0, 1, nrow * ncol * nlayer){
   int selInitPhase;
   int m;
   int x, y, z;
@@ -172,7 +172,6 @@ int Gen3DProstTissue::calcModelOut(){
 
 int Gen3DProstTissue::initModel(const double DT){
   PAR_INIT_NUM_TUM = getNumTum();
-  PAR_NUM_SESSION = 0.0;
   m_flag = 0;
   cout << "Total number of cells = " << m_numComp << endl;
   cout << "Initial number of cells at G1 = " << getNumG1() << endl;
@@ -223,47 +222,38 @@ int Gen3DProstTissue::terminateModel(){
 
 int Gen3DProstTissue::updateModel(const double currentTime,
 				  const double DT){
-  int i;
-  
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->updateModel(currentTime, DT);
   }
   
-  if(fmod(currentTime, m_treatment->getInterval()) == 0){
-    i = currentTime / m_treatment->getInterval();
-    if((m_treatment->getSchedule()).at(i)){
-      PAR_NUM_SESSION += 1.0;
-    }
-  }
-  
   if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
     cout << "Total dose needed to kill 50% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
     cout << "Total dose needed to kill 80% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
     cout << "Total dose needed to kill 90% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   else if(getNumTum() / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
     cout << "Total dose needed to kill 95% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
     cout << "Total dose needed to kill 99% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
     cout << "Total dose needed to kill 99.9% of tumor cells = " <<
-      PAR_NUM_SESSION * m_treatment->getFraction() << endl;
+      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
     m_flag++;
   }
   return 0;

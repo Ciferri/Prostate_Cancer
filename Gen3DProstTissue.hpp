@@ -18,7 +18,6 @@
 
 //Internal parameters
 #define PAR_INIT_NUM_TUM m_param->at(0)
-#define PAR_NUM_SESSION  m_param->at(1)
 
 class Gen3DProstTissue : public Model {
 public:
