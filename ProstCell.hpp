@@ -60,9 +60,12 @@ public :
   virtual int updateModel(const double currentTime,
 			  const double DT);
   void addToEdge(ProstCell *const cell);
+  void calcDeadCellsResor(const double DT);
   double calcOER() const;
+  void calcRespToIrr();
   double calcRF (const double DT) const;
   double calcSF() const;
+  void calcTumGrowth();
   double getAlive() const;
   double getAccDose() const;
   double getDead() const;
@@ -85,7 +88,7 @@ public :
   void setInVes(const double input);
 
 protected:
-  std::vector<ProstCell*> *m_edge;
+  std::vector<ProstCell *> *m_edge;
   Treatment *m_treatment;
 };
 #endif

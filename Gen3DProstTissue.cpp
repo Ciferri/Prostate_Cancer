@@ -1,3 +1,4 @@
+
 /**
  * @file Gen3DProstTissue.cpp
  * @brief
@@ -42,11 +43,9 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   Treatment *const treatment) :
   Model(DESS, 0, 0, 0, 1, nrow * ncol * nlayer){
   int selInitPhase;
-  int m;
-  int x, y, z;
-  int *coordxyz;
   double doubTime;
   double inputPO2, inputTimer, inputTum, inputVes;
+  vector<Model **> map2D;
   ifstream fInPO2(nFInPO2.c_str());
   ifstream fInTum(nFInTum.c_str());
   ifstream fInVes(nFInVes.c_str());
@@ -62,27 +61,35 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
     m_comp->at(k) = new ProstCell(this);
     m_numOut += (m_comp->at(k))->getNumOut();
   }
+  for(int i(0); i < m_nrow * m_nlayer; i++){
+    map2D.push_back(&(m_comp->at(i * m_ncol)));
+  }
+  for(int l(0); l < m_nlayer; l++){
+    m_map.push_back(&(map2D[l * m_nrow]));
+  }
+  
   //Definition of each cell's edge
-  for(int k(0); k < m_numComp; k++){
-    coordxyz = kToXyz(k);
-    x = coordxyz[0];
-    y = coordxyz[1];
-    z = coordxyz[2];
-    for(int i(-1); i <= 1; i++){
-      for(int j(-1); j <= 1; j++){
-	for(int l(-1); l <= 1; l++){
-	  if(i!=0 || j!=0 || l!=0){
-	    m = xyzTok(x + i, y + j, z +l);
-	    if(m != -1){
-	      ((ProstCell *)m_comp->at(k))
-		->addToEdge(((ProstCell *)m_comp->at(m)));
+  for(int l(0); l < m_nlayer; l++){
+    for(int i(0); i < m_nrow; i++){
+      for(int j(0); j < m_ncol; j++){
+	for(int ll(-1); ll <= 1; ll++){
+	  for(int ii(-1); ii <= 1; ii++){
+	    for(int jj(-1); jj <= 1; jj++){
+	      if(ii != 0 || jj != 0 || ll != 0){
+		if(l + ll >= 0 && l + ll < m_nlayer && i + ii >= 0
+		   && i + ii < m_nrow && j + jj >= 0 &&
+		   j + jj < m_ncol){
+		  ((ProstCell *)m_map[l][i][j])
+		    ->addToEdge(((ProstCell *)m_map[l + ll][i + ii]
+				 [j + jj]));
+		}
+	      }
 	    }
 	  }
 	}
       }
-    }   
+    }
   }
-  
   
   //Initialization of the PO2 and cells state 
   if(fInPO2.is_open() == 0){
@@ -226,35 +233,32 @@ int Gen3DProstTissue::updateModel(const double currentTime,
     (m_comp->at(k))->updateModel(currentTime, DT);
   }
   
-  if(getNumTum() / PAR_INIT_NUM_TUM < 0.5 && m_flag == 0){
-    cout << "Total dose needed to kill 50% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
-  }
-  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.2 && m_flag == 1){
-    cout << "Total dose needed to kill 80% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
-  }
-  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.1 && m_flag == 2){
-    cout << "Total dose needed to kill 90% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
-  }
-  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.05 && m_flag == 3){
-    cout << "Total dose needed to kill 95% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
-  }
-  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.01 && m_flag == 4){
-    cout << "Total dose needed to kill 99% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
-  }
-  else if(getNumTum() / PAR_INIT_NUM_TUM < 0.001 && m_flag == 5){
-    cout << "Total dose needed to kill 99.9% of tumor cells = " <<
-      ((ProstCell *)m_comp->at(0))->getAccDose() << endl;
-    m_flag++;
+  if(m_treatment){
+    int print(0);
+    double tumSurv;
+    tumSurv = getNumTum() / PAR_INIT_NUM_TUM;
+    if(tumSurv < 0.5){
+      print = 1;
+    }
+    if(tumSurv < 0.2){
+      print = 2;
+    }
+    if(tumSurv < 0.1){
+      print = 3;
+    }
+    if(tumSurv < 0.05){
+      print = 4;
+    }
+    if(tumSurv < 0.01){
+      print = 5;
+    }
+    if(tumSurv < 0.001){
+      print = 6;
+    }
+    if(print > m_flag){
+      printNeededDose();
+      m_flag++;
+    }
   }
   return 0;
 }
@@ -353,35 +357,31 @@ Treatment *Gen3DProstTissue::getTreatment() const{
 }
 
 
-int *Gen3DProstTissue::kToXyz(const int k) const{
-  int *tab= new int[3];
-  if(k > -1 && k < m_nrow * m_ncol * m_nlayer){
-    tab[0] = (k % (m_nrow * m_ncol)) / m_ncol;
-    tab[1] = (k % (m_nrow * m_ncol)) % m_ncol;
-    tab[2] = k / (m_nrow * m_ncol);
+void Gen3DProstTissue::printNeededDose() const{
+  string perc;
+  
+  switch(m_flag){
+  case 0:
+    perc = "50";
+    break;
+  case 1:
+    perc = "80";
+    break;
+  case 2:
+    perc = "90";
+  case 3:
+    perc = "95";
+    break;
+  case 4:
+    perc = "99";
+  case 5:
+    perc = "99.9";
+    break;
   }
-  else{
-    tab[0] = -1;
-    tab[1] = -1;
-    tab[2] = -1;
-  }
-  return tab;
+ 
+  cout << "Total dose needed to kill " << perc <<
+    "% of tumor cells = " <<
+    ((ProstCell*)m_comp->at(0))->getAccDose() << endl;
 }
-
-
-int Gen3DProstTissue::xyzTok(const int x, const int y,
-			     const int z) const{
-  if(x > -1 && x < m_nrow && y > -1 && y < m_ncol && z > -1 &&
-     z < m_nlayer){
-    return x * m_ncol + y + z * m_nrow * m_ncol;
-  }
-  else{
-    return -1;
-  }
-}
-
-
-
-
 
 

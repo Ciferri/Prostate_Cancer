@@ -44,11 +44,11 @@ public:
   int getNumTum() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
-  int *kToXyz(const int k) const;
-  int xyzTok(const int x, const int y, const int z) const;
+  void printNeededDose() const;
   
 protected:
   int m_ncol, m_nlayer, m_nrow;
+  std::vector<Model ***> m_map;
   int m_flag;
   Treatment *m_treatment;
 };

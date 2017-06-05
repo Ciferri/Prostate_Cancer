@@ -159,9 +159,6 @@ int ProstCell::terminateModel(){
 
 int ProstCell::updateModel(const double currentTime,
 			   const double DT){
-  int i;
-  double p;
-  ProstCell *newTumCell(0);
   
   ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUM && !IN_DEAD &&
     !IN_VES;   
@@ -215,44 +212,19 @@ int ProstCell::updateModel(const double currentTime,
 
   PAR_PO2 = IN_PO2;
   
-  //Tumor growth
-  if(PAR_TIMER >= PAR_DOUBTIME){
-    PAR_TIMER = 0;
-    if(ST_TUM && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
-      newTumCell = searchSpace();
-      newTumCell->setInTum(1.0);
-      newTumCell->PAR_TIMER = 0;
-    }     
-  }
+  calcTumGrowth();
 
   if(m_treatment){
-    //Response to radiation
     if(fmod(currentTime, m_treatment->getInterval()) == 0){
-      i = currentTime / m_treatment->getInterval();
+      int i(currentTime / m_treatment->getInterval());
       if((m_treatment->getSchedule()).at(i)){
-	p = (double)rand() / (double)(RAND_MAX);
-	if(calcSF() < p){
-	  setInDead (1.0);
-	  p = (double)rand() / (double)(RAND_MAX);
-	  if(p < 0.8){
-	    PAR_DEADTIME = 234; //apoptotic
-	  }
-	  else{
-	    PAR_DEADTIME = 468; //necrotic
-	  }
-	  PAR_TIMER = 0;
-	}
-	PAR_ACC_DOSE += m_treatment->getFraction();
+	calcRespToIrr();
       }
     }
-    //Resorption
-    if(ST_DEAD){
-      p = (double)rand() / (double)(RAND_MAX);
-      if(calcRF(DT) > p){
-	PAR_TIMER = 0;
-	setInAlive(1.0);
-      }
-    }
+  }
+
+  if(ST_DEAD){
+    calcDeadCellsResor(DT);
   }
   return 0;
 }
@@ -263,11 +235,41 @@ void ProstCell::addToEdge(ProstCell *const cell){
 }
 
 
+void ProstCell::calcDeadCellsResor(const double DT){
+  double p;
+  
+  p = (double)rand() / (double)(RAND_MAX);
+  if(calcRF(DT) > p){
+    PAR_TIMER = 0;
+    setInAlive(1.0);
+  }
+}
+
+  
 double ProstCell::calcOER() const{
   double OER;
   
   OER = (PAR_M * PAR_PO2 + PAR_K) / (PAR_PO2 + PAR_K); //mmHg
   return OER;
+}
+
+
+void ProstCell::calcRespToIrr(){
+  double p;
+  
+  p = (double)rand() / (double)(RAND_MAX);
+  if(calcSF() < p){
+    setInDead (1.0);
+    p = (double)rand() / (double)(RAND_MAX);
+    if(p < 0.8){
+      PAR_DEADTIME = 234; //apoptotic
+    }
+    else{
+      PAR_DEADTIME = 468; //necrotic
+    }
+    PAR_TIMER = 0;
+  }
+  PAR_ACC_DOSE += m_treatment->getFraction();
 }
 
 
@@ -287,6 +289,20 @@ double ProstCell::calcSF() const{
 	   PAR_BETA / (PAR_M * PAR_M) * fraction * fraction *
 	   calcOER() * calcOER());
   return SF;
+}
+
+
+void ProstCell::calcTumGrowth(){
+  ProstCell *newTumCell(0);
+  
+  if(PAR_TIMER >= PAR_DOUBTIME){
+    PAR_TIMER = 0;
+    if(ST_TUM && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
+      newTumCell = searchSpace();
+      newTumCell->setInTum(1.0);
+      newTumCell->PAR_TIMER = 0;
+    }     
+  }
 }
 
 
