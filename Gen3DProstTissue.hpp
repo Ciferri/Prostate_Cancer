@@ -40,8 +40,11 @@ class Gen3DProstTissue : public Model {
   virtual int terminateModel();
   virtual int updateModel(const double currentTime,
 			  const double DT);
-  void addToDeadCells(const int k);
-  void addToEdge(const int x, const int y, const int z);
+  void addToDeadCells(ProstCell *const cell);
+  void addToTumEdge(ProstCell *const cell);
+  void calcCellsResor();
+  void calcTumGrowth();
+  void calcRespToIrr();
   double getAlpha() const;
   double getBeta() const;
   int getNumAlive() const;
@@ -49,21 +52,21 @@ class Gen3DProstTissue : public Model {
   int getNumTum() const;
   int getNumVes() const;
   Treatment *getTreatment() const;
-  int *kToXyz(const int k) const;
-  void removeFromDeadCells(const int k);
-  void removeFromEdge(const int k);
-  void setInAlive(const int k, const double input);
-  void setInDead(const int k, const double input);
-  void setInTum(const int k, const double input);
-  void setInVes(const int k, const double input);
-  int xyzTok(const int x, const int y, const int z) const;
+  void printNeededDose() const;
+  void rmFromDeadCells(ProstCell *const cell);
+  void rmFromTumEdge(ProstCell *const cell);
+  void setInAlive(ProstCell *const cell, const double input);
+  void setInDead(ProstCell *const cell, const double input);
+  void setInTum(ProstCell *const cell, const double input);
+  void setInVes(ProstCell *const cell, const double input);
 
 protected:
   int m_ncol, m_nlayer, m_nrow;
   int m_flag;
   Treatment *m_treatment;
-  std::vector<int> *m_deadCells;
-  std::vector<int> *m_tumEdge;
+  std::vector<Model ***> m_map;
+  std::vector<ProstCell *> *m_deadCells;
+  std::vector<ProstCell *> *m_tumEdge;
 };
 
 #endif

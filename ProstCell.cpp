@@ -30,6 +30,7 @@ ProstCell::ProstCell() : Model(DESS, 5, 4, 1, 8, 0){
   PAR_BETA  = 0; //Gy^-2
   
   m_parent = 0;
+  m_edge = new vector<ProstCell *>((unsigned int)0, 0);
 }
 
 ProstCell::ProstCell(Model *const parent) :
@@ -49,6 +50,7 @@ ProstCell::ProstCell(Model *const parent) :
   PAR_BETA  = 0; //Gy^-2
   
   m_parent  = parent;
+  m_edge = new vector<ProstCell *>((unsigned int)0, 0);
 }
 
 
@@ -107,6 +109,11 @@ int ProstCell::updateModel(const double currentTime,
 }
 
 
+void ProstCell::addToEdge(ProstCell *const cell){
+  m_edge->push_back(cell);
+}
+
+
 double ProstCell::calcOER() const{
   double OER;
   
@@ -115,11 +122,9 @@ double ProstCell::calcOER() const{
 }
 
 
-double ProstCell::calcSF() const{
-  double fraction, SF;
+double ProstCell::calcSF(const double fraction) const{
+  double  SF;
   
-  fraction = ((Gen3DProstTissue *)m_parent)->getTreatment()->
-    getFraction();
   SF = exp(-PAR_ALPHA / PAR_M * fraction * calcOER() -
 	   PAR_BETA / (PAR_M * PAR_M) * fraction * fraction *
 	   calcOER() * calcOER());
@@ -143,6 +148,11 @@ double ProstCell::getDeadTime() const{
 
 double ProstCell::getDoubTime() const{
   return PAR_DOUBTIME;
+}
+
+
+vector<ProstCell *> *ProstCell::getEdge() const{
+  return m_edge;
 }
 
 

@@ -9,9 +9,7 @@
 #ifndef DEF_PROSTCELL
 #define DEF_PROSTCELL
 
-#include "Gen3DProstTissue.hpp"
 #include "Model.hpp"
-#include "Treatment.hpp"
 
 //Inputs
 #define IN_ALIVE     m_in->at(0)
@@ -47,14 +45,16 @@ public :
   virtual int initModel(const double DT);
   virtual int startModel();
   virtual int terminateModel();
-  virtual int updateModel(const double currentTime,
-			  const double DT);
+  virtual int updateModel(const double currentTime = 0,
+			  const double DT = 0);
+  void addToEdge(ProstCell *const cell);
   double calcOER() const;
-  double calcSF() const;
+  double calcSF(const double fraction) const;
   double getAlive() const;
   double getDead() const;
   double getDeadTime() const;
   double getDoubTime() const;
+  std::vector<ProstCell *> *getEdge() const;
   double getInAlive() const;
   int getOutState() const;
   double getTum() const;
@@ -64,5 +64,8 @@ public :
   void setInPO2(const double input);
   void setInTum(const double input);
   void setInVes(const double input);
+
+protected:
+  std::vector<ProstCell *> *m_edge;
 };
 #endif

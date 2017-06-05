@@ -26,7 +26,7 @@ using namespace std;
 int main(int argc, char *argv[]){
   int nrow, ncol, nlayer;
   double simTime;
-  string nFInPO2, nFInTum, nFInVes, nFTissueDim;
+  string nFInPO2, nFInTum, nFInVes, nFTissueDim, nFTreatment;
   Model *model;
   Simulator *sim;
   Treatment *treatment;

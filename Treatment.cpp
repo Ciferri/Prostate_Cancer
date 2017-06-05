@@ -17,7 +17,7 @@ Treatment::Treatment(){
   
   m_fraction  = 2.0; //Gy
   m_interval  = 24.0; //s
-  m_totalDose = 80.0; //Gy
+  m_totalDose = 200.0; //Gy
 
   //Sessions scheduled Mon-Fri
   numSession=(int)(m_totalDose/m_fraction);
