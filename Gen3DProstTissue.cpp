@@ -369,11 +369,13 @@ void Gen3DProstTissue::printNeededDose() const{
     break;
   case 2:
     perc = "90";
+    break;
   case 3:
     perc = "95";
     break;
   case 4:
     perc = "99";
+    break;
   case 5:
     perc = "99.9";
     break;
