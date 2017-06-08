@@ -1,2 +1,2 @@
 #!/bin/bash
-mencoder "mf://*.png" -mf fps=4 -o output.avi -ovc lavc -lavcopts vcodec=mpeg4
+mencoder "mf://*.png" -mf fps=2 -o output.avi -ovc lavc -lavcopts vcodec=mpeg4
