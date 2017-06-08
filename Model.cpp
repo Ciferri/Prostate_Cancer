@@ -11,23 +11,20 @@
 
 using namespace std;
 
-Model::Model(const modelType type, const int numIn, const int numSt,
-	     const int numOut, const int numParam,
-	     const int numComp){
-
-  m_typeModel = type;
-  m_numIn = numIn;
-  m_numSt = numSt;
-  m_numOut = numOut;
+Model::Model(const int numIn, const int numSt, const int numOut,
+	     const int numParam, const int numComp){
+  m_numIn    = numIn;
+  m_numSt    = numSt;
+  m_numOut   = numOut;
   m_numParam = numParam;
-  m_numComp = numComp;
+  m_numComp  = numComp;
 
-  m_in = new DoubleVect(numIn, 0);
-  m_st = new DoubleVect(numSt, 0);
+  m_in       = new DoubleVect(numIn, 0);
+  m_st       = new DoubleVect(numSt, 0);
   m_derivSt  = new DoubleVect(numSt, 0);
-  m_out = new DoubleVect(numOut, 0);
-  m_param = new DoubleVect(numParam, 0);
-  m_comp = new vector<Model *>((unsigned int)numComp, 0);
+  m_out      = new DoubleVect(numOut, 0);
+  m_param    = new DoubleVect(numParam, 0);
+  m_comp     = new vector<Model *>((unsigned int)numComp, 0);
 }
 
 

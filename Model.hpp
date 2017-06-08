@@ -12,12 +12,11 @@
 #include <vector>
 
 typedef std::vector<double> DoubleVect;
-enum modelType {DEVS,DESS,DTSS};
 
 class Model {
 public :
-  Model(const modelType type, const int numIn, const int numSt,
-	const int numOut, const int numParam, const int numComp);
+  Model(const int numIn, const int numSt, const int numOut,
+	const int numParam, const int numComp);
   virtual ~Model();
   virtual int calcModelOut() = 0;
   virtual int initModel(const double DT = 0) = 0;
@@ -39,7 +38,6 @@ public :
   int getNumComp() const;
 
 protected:
-  modelType m_typeModel;
   int m_numIn;
   int m_numSt;
   int m_numOut;
