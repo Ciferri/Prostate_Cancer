@@ -29,7 +29,6 @@ public :
   DoubleVect *getDerivSt() const;
   DoubleVect *getOut() const;
   DoubleVect *getParam() const;
-  modelType getModelType() const;
   std::vector<Model*> *getComp() const;
   int getNumIn() const;
   int getNumSt() const;

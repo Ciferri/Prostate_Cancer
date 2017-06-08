@@ -73,11 +73,6 @@ DoubleVect *Model::getParam() const{
 }
 
 
-modelType Model::getModelType() const{
-  return m_typeModel;
-}
-
-
 vector<Model*> *Model::getComp() const{
   return m_comp;
 }
