@@ -15,64 +15,115 @@
 
 using namespace std;
 
-ProstCell::ProstCell() : Model(DESS, 6, 8, 1, 12, 0){
+ProstCell::ProstCell(Model *const parent) : Model(6, 8, 1, 29, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD  = 0.0;
   ST_TUM   = 0.0;		
   ST_VES   = 0.0;
 
-  PAR_TIMER    = 0; //h
-  PAR_DOUBTIME = 1008; //h 
-  PAR_DEADTIME = 234; //h 
-  PAR_LIMG1S   = 0.55 * PAR_DOUBTIME;
-  PAR_LIMSG2   = 0.75 * PAR_DOUBTIME;
-  PAR_LIMG2M   = 0.9 * PAR_DOUBTIME;
+  PAR_TIMER     = 0; //h
+  PAR_DOUB_TIME = 1008; //h
   
-  ST_G1 = 0 <= PAR_TIMER && PAR_TIMER < PAR_LIMG1S;
-  ST_S  = PAR_LIMG1S <= PAR_TIMER && PAR_TIMER < PAR_LIMSG2;
-  ST_G2 = PAR_LIMSG2 <= PAR_TIMER && PAR_TIMER < PAR_LIMG2M;
-  ST_M  = PAR_LIMG2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUBTIME;
-
+  PAR_LIM_G1S = 0.55 * PAR_DOUB_TIME;
+  PAR_LIM_SG2 = 0.75 * PAR_DOUB_TIME;
+  PAR_LIM_G2M = 0.9  * PAR_DOUB_TIME;
+  
+  ST_G1 = 0           <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G1S;
+  ST_S  = PAR_LIM_G1S <= PAR_TIMER && PAR_TIMER <  PAR_LIM_SG2;
+  ST_G2 = PAR_LIM_SG2 <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G2M;
+  ST_M  = PAR_LIM_G2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUB_TIME;
+  
   PAR_M     = 3.0; //adim.
   PAR_K     = 3.0; //mmHg
   PAR_PO2   = 3.5; //mmHg
-  PAR_ALPHA = 0; //Gy^-1
-  PAR_BETA  = 0; //Gy^-2
+  
+  PAR_ALPHA_ALIVE = 0; //Gy^-1
+  PAR_ALPHA_G1    = 0.158; //Gy^-1
+  PAR_ALPHA_S     = 0.113; //Gy^-1
+  PAR_ALPHA_G2    = 0.169; //Gy^-1
+  PAR_ALPHA_M     = 0.189; //Gy^-1
+  PAR_ALPHA_DEAD  = 0; //Gy^-1
+  PAR_ALPHA_VES   = 0; //Gy^-1
 
+  PAR_ALPHA = PAR_ALPHA_ALIVE;
+
+  PAR_BETA_ALIVE = 0; //Gy^-2
+  PAR_BETA_G1    = 0.051; //Gy^-2
+  PAR_BETA_S     = 0.037; //Gy^-2
+  PAR_BETA_G2    = 0.055; //Gy^-2
+  PAR_BETA_M     = 0.061; //Gy^-2
+  PAR_BETA_DEAD  = 0; //Gy^-2
+  PAR_BETA_VES   = 0; //Gy^-2
+
+  PAR_BETA = PAR_BETA_ALIVE;
+
+  PAR_APOP_PROB      = 0.8;
+  PAR_APOP_DEAD_TIME = 234; //h
+  PAR_NEC_DEAD_TIME  = 468; //h
+  PAR_DEAD_TIME      = PAR_APOP_DEAD_TIME; //h
+    
   PAR_ACC_DOSE = 0; //Gy
   
-  m_parent = 0;
+  m_parent = parent;
   m_edge = new vector<ProstCell *>((unsigned int)0, 0);
   m_treatment = 0;
-  
 }
 
 
-ProstCell::ProstCell(Model *const parent) :
-  Model(DESS, 6, 8, 1, 12, 0){
+ProstCell::ProstCell(const double doubTime,
+		     vector <double> cycDur,
+		     const double apopDeadTime,
+		     const double necDeadTime,
+		     const double apopProb, vector<double> alpha,
+		     vector<double> beta, Model *const parent) :
+  Model(6, 8, 1, 29, 0){
   ST_ALIVE = 1.0;		
   ST_DEAD  = 0.0;
   ST_TUM   = 0.0;		
   ST_VES   = 0.0;
 
   PAR_TIMER    = 0; //h
-  PAR_DOUBTIME = 1008; //h 
-  PAR_DEADTIME = 234; //h
-  PAR_LIMG1S   = 0.55 * PAR_DOUBTIME;
-  PAR_LIMSG2   = 0.75 * PAR_DOUBTIME;
-  PAR_LIMG2M   = 0.9 * PAR_DOUBTIME;
+  PAR_DOUB_TIME = doubTime; //h
+
   
-  ST_G1 = 0 <= PAR_TIMER && PAR_TIMER < PAR_LIMG1S;
-  ST_S  = PAR_LIMG1S <= PAR_TIMER && PAR_TIMER < PAR_LIMSG2;
-  ST_G2 = PAR_LIMSG2 <= PAR_TIMER && PAR_TIMER < PAR_LIMG2M;
-  ST_M  = PAR_LIMG2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUBTIME;
+  PAR_LIM_G1S = cycDur.at(0) * PAR_DOUB_TIME;
+  PAR_LIM_SG2 = PAR_LIM_G1S + cycDur.at(1) * PAR_DOUB_TIME;
+  PAR_LIM_G2M = PAR_LIM_SG2 + cycDur.at(2) * PAR_DOUB_TIME;
+  
+  ST_G1 = 0           <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G1S;
+  ST_S  = PAR_LIM_G1S <= PAR_TIMER && PAR_TIMER <  PAR_LIM_SG2;
+  ST_G2 = PAR_LIM_SG2 <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G2M;
+  ST_M  = PAR_LIM_G2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUB_TIME;
   
   PAR_M     = 3.0; //adim.
   PAR_K     = 3.0; //mmHg
   PAR_PO2   = 3.5; //mmHg
-  PAR_ALPHA = 0; //Gy^-1
-  PAR_BETA  = 0; //Gy^-2
+  
+  PAR_ALPHA_ALIVE = alpha.at(0); //Gy^-1
+  PAR_ALPHA_G1    = alpha.at(1); //Gy^-1
+  PAR_ALPHA_S     = alpha.at(2); //Gy^-1
+  PAR_ALPHA_G2    = alpha.at(3); //Gy^-1
+  PAR_ALPHA_M     = alpha.at(4); //Gy^-1
+  PAR_ALPHA_DEAD  = alpha.at(5); //Gy^-1
+  PAR_ALPHA_VES   = alpha.at(6); //Gy^-1
 
+  PAR_ALPHA = PAR_ALPHA_ALIVE;
+
+  PAR_BETA_ALIVE = beta.at(0); //Gy^-2
+  PAR_BETA_G1    = beta.at(1); //Gy^-2
+  PAR_BETA_S     = beta.at(2); //Gy^-2
+  PAR_BETA_G2    = beta.at(3); //Gy^-2
+  PAR_BETA_M     = beta.at(4); //Gy^-2
+  PAR_BETA_DEAD  = beta.at(5); //Gy^-2
+  PAR_BETA_VES   = beta.at(6); //Gy^-2
+
+  PAR_BETA = PAR_BETA_ALIVE;
+
+  PAR_APOP_PROB      = apopProb;
+  PAR_APOP_DEAD_TIME = apopDeadTime; //h
+  PAR_NEC_DEAD_TIME  = necDeadTime; //h
+  PAR_DEAD_TIME      = PAR_APOP_DEAD_TIME; //h
+    
   PAR_ACC_DOSE = 0; //Gy
   
   m_parent = parent;
@@ -92,7 +143,7 @@ int ProstCell::calcModelOut(){
 
 
 int ProstCell::initModel(const double DT){
-  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUM && !IN_DEAD &&
+  ST_ALIVE = (ST_ALIVE || IN_ALIVE) && !IN_TUM && !IN_DEAD &&
     !IN_VES;   
   ST_TUM   = (ST_TUM || IN_TUM) && !ST_ALIVE && !IN_DEAD;
   ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUM;
@@ -102,42 +153,41 @@ int ProstCell::initModel(const double DT){
   setInVes(0.0);
   
   PAR_TIMER = IN_TIMER;
-  ST_G1 = !ST_DEAD && 0 <= PAR_TIMER && PAR_TIMER < PAR_LIMG1S;
-  ST_S  = !ST_DEAD && PAR_LIMG1S <= PAR_TIMER &&
-    PAR_TIMER < PAR_LIMSG2;
-  ST_G2 = !ST_DEAD && PAR_LIMSG2 <= PAR_TIMER &&
-    PAR_TIMER < PAR_LIMG2M;
-  ST_M  = !ST_DEAD && PAR_LIMG2M <= PAR_TIMER &&
-    PAR_TIMER <= PAR_DOUBTIME; 
+  if(!ST_DEAD){
+    ST_G1 = 0           <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G1S;
+    ST_S  = PAR_LIM_G1S <= PAR_TIMER && PAR_TIMER <  PAR_LIM_SG2;
+    ST_G2 = PAR_LIM_SG2 <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G2M;
+    ST_M  = PAR_LIM_G2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUB_TIME;
+  }
 
   if(ST_ALIVE){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_ALIVE;
+    PAR_BETA  = PAR_BETA_ALIVE;
   }
   if(ST_DEAD){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_DEAD;
+    PAR_BETA  = PAR_BETA_DEAD;
   }
   if(ST_VES){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_VES;
+    PAR_BETA  = PAR_BETA_VES;
   }
   if(ST_TUM){
     if(ST_G1){
-      PAR_ALPHA = 0.158;
-      PAR_BETA  = 0.051;
+      PAR_ALPHA = PAR_ALPHA_G1;
+      PAR_BETA  = PAR_BETA_G1;
     }
     if(ST_S){
-      PAR_ALPHA = 0.113;
-      PAR_BETA  = 0.037;
+      PAR_ALPHA = PAR_ALPHA_S;
+      PAR_BETA  = PAR_BETA_S;
     }
     if(ST_G2){
-      PAR_ALPHA = 0.169;
-      PAR_BETA  = 0.055;
+      PAR_ALPHA = PAR_ALPHA_G2;
+      PAR_BETA  = PAR_BETA_G2;
     }
     if(ST_M){
-      PAR_ALPHA = 0.189;
-      PAR_BETA  = 0.061;
+      PAR_ALPHA = PAR_ALPHA_M;
+      PAR_BETA  = PAR_BETA_M;
     }
   }
 
@@ -159,8 +209,7 @@ int ProstCell::terminateModel(){
 
 int ProstCell::updateModel(const double currentTime,
 			   const double DT){
-  
-  ST_ALIVE = (ST_ALIVE || IN_ALIVE)  && !IN_TUM && !IN_DEAD &&
+  ST_ALIVE = (ST_ALIVE || IN_ALIVE) && !IN_TUM && !IN_DEAD &&
     !IN_VES;   
   ST_TUM   = (ST_TUM || IN_TUM) && !ST_ALIVE && !IN_DEAD;
   ST_DEAD  = (ST_DEAD || IN_DEAD) && !ST_ALIVE && !ST_TUM;
@@ -171,42 +220,41 @@ int ProstCell::updateModel(const double currentTime,
   setInVes(0.0);
 
   PAR_TIMER += DT;
-  ST_G1 = !ST_DEAD && 0 <= PAR_TIMER && PAR_TIMER < PAR_LIMG1S;
-  ST_S  = !ST_DEAD && PAR_LIMG1S <= PAR_TIMER &&
-    PAR_TIMER < PAR_LIMSG2;
-  ST_G2 = !ST_DEAD && PAR_LIMSG2 <= PAR_TIMER &&
-    PAR_TIMER < PAR_LIMG2M;
-  ST_M  = !ST_DEAD && PAR_LIMG2M <= PAR_TIMER &&
-    PAR_TIMER <= PAR_DOUBTIME;
-    
+  if(!ST_DEAD){
+    ST_G1 = 0           <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G1S;
+    ST_S  = PAR_LIM_G1S <= PAR_TIMER && PAR_TIMER <  PAR_LIM_SG2;
+    ST_G2 = PAR_LIM_SG2 <= PAR_TIMER && PAR_TIMER <  PAR_LIM_G2M;
+    ST_M  = PAR_LIM_G2M <= PAR_TIMER && PAR_TIMER <= PAR_DOUB_TIME;
+  }
+
   if(ST_ALIVE){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_ALIVE;
+    PAR_BETA  = PAR_BETA_ALIVE;
   }
   if(ST_DEAD){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_DEAD;
+    PAR_BETA  = PAR_BETA_DEAD;
   }
   if(ST_VES){
-    PAR_ALPHA = 0;
-    PAR_BETA  = 0;
+    PAR_ALPHA = PAR_ALPHA_VES;
+    PAR_BETA  = PAR_BETA_VES;
   }
   if(ST_TUM){
     if(ST_G1){
-      PAR_ALPHA = 0.158;
-      PAR_BETA  = 0.051;
+      PAR_ALPHA = PAR_ALPHA_G1;
+      PAR_BETA  = PAR_BETA_G1;
     }
     if(ST_S){
-      PAR_ALPHA = 0.113;
-      PAR_BETA  = 0.037;
+      PAR_ALPHA = PAR_ALPHA_S;
+      PAR_BETA  = PAR_BETA_S;
     }
     if(ST_G2){
-      PAR_ALPHA = 0.169;
-      PAR_BETA  = 0.055;
+      PAR_ALPHA = PAR_ALPHA_G2;
+      PAR_BETA  = PAR_BETA_G2;
     }
     if(ST_M){
-      PAR_ALPHA = 0.189;
-      PAR_BETA  = 0.061;
+      PAR_ALPHA = PAR_ALPHA_M;
+      PAR_BETA  = PAR_BETA_M;
     }
   }
 
@@ -261,11 +309,11 @@ void ProstCell::calcRespToIrr(){
   if(calcSF() < p){
     setInDead (1.0);
     p = (double)rand() / (double)(RAND_MAX);
-    if(p < 0.8){
-      PAR_DEADTIME = 234; //apoptotic
+    if(p < PAR_APOP_PROB){
+      PAR_DEAD_TIME = PAR_APOP_DEAD_TIME;
     }
     else{
-      PAR_DEADTIME = 468; //necrotic
+      PAR_DEAD_TIME = PAR_NEC_DEAD_TIME;
     }
     PAR_TIMER = 0;
   }
@@ -276,7 +324,7 @@ void ProstCell::calcRespToIrr(){
 double ProstCell::calcRF(const double DT) const{
   double RF;
 
-  RF = 1.0 - pow(2.0, -DT / PAR_DEADTIME);
+  RF = 1.0 - pow(2.0, -DT / PAR_DEAD_TIME);
   return RF;
 }
 
@@ -295,7 +343,7 @@ double ProstCell::calcSF() const{
 void ProstCell::calcTumGrowth(){
   ProstCell *newTumCell(0);
   
-  if(PAR_TIMER >= PAR_DOUBTIME){
+  if(PAR_TIMER >= PAR_DOUB_TIME){
     PAR_TIMER = 0;
     if(ST_TUM && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
       newTumCell = searchSpace();
@@ -322,12 +370,12 @@ double ProstCell::getDead() const{
 
 
 double ProstCell::getDeadTime() const{
-  return PAR_DEADTIME;
+  return PAR_DEAD_TIME;
 }
 
 
 double ProstCell::getDoubTime() const{
-  return PAR_DOUBTIME;
+  return PAR_DOUB_TIME;
 }
 
 

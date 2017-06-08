@@ -19,13 +19,14 @@
 using namespace std;
 
 Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
-				   const int nlayer) :
-  Model(DESS, 0, 0, 0, 1, nrow * ncol * nlayer){
+				   const int nlayer,
+				   Treatment *const treatment) :
+  Model(0, 0, 0, 1, nrow * ncol * nlayer){
   m_nrow   = nrow;
   m_ncol   = ncol;
   m_nlayer = nlayer;
   
-  m_treatment = 0;
+  m_treatment = treatment;
     
   //Creation of the cells composing the tissue model
   for(int k(0); k < m_numComp; k++){
@@ -40,11 +41,17 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const string nFInPO2,
 				   const string nFInTum,
 				   const string nFInVes,
+				   const double doubTime,
+				   vector<double> cycDur,
+				   vector<double> cycDistrib,
+				   const double apopDeadTime,
+				   const double necDeadTime,
+				   const double apopProb,
+				   vector<double> alpha,
+				   vector<double> beta,
 				   Treatment *const treatment) :
-  Model(DESS, 0, 0, 0, 1, nrow * ncol * nlayer){
-  int selInitPhase;
-  double doubTime;
-  double inputPO2, inputTimer, inputTum, inputVes;
+  Model(0, 0, 0, 1, nrow * ncol * nlayer){
+  double inputPO2, inputTimer, inputTum, inputVes, selInitPhase;
   vector<Model **> map2D;
   ifstream fInPO2(nFInPO2.c_str());
   ifstream fInTum(nFInTum.c_str());
@@ -58,7 +65,9 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
   
   //Creation of the cells composing the tissue model
   for(int k(0); k < m_numComp; k++){
-    m_comp->at(k) = new ProstCell(this);
+    m_comp->at(k) = new ProstCell(doubTime, cycDur, apopDeadTime,
+				  necDeadTime, apopProb, alpha,
+				  beta, this);
     m_numOut += (m_comp->at(k))->getNumOut();
   }
   for(int i(0); i < m_nrow * m_nlayer; i++){
@@ -136,22 +145,22 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 	break;
       }
       
-      doubTime = ((ProstCell *)m_comp->at(k))->getDoubTime();
-      selInitPhase = rand() % 200;
-      if(selInitPhase < 120){
-	inputTimer = rand() % (int)(0.55 * doubTime);
+      selInitPhase = (double)rand() / (double)(RAND_MAX);
+      if(selInitPhase < cycDistrib.at(0)){
+	inputTimer = rand() % (int)(cycDur.at(0) * doubTime);
       }
-      else if(selInitPhase < 170){
-	inputTimer = (int)(0.55 * doubTime) +
-	  rand() % (int)(0.2 * doubTime);
+      else if(selInitPhase < cycDistrib.at(0) + cycDistrib.at(1)){
+	inputTimer = cycDur.at(0) * doubTime +
+	  rand() % (int)(cycDur.at(1) * doubTime);
       }
-      else if(selInitPhase < 185){
-	inputTimer = (int)(0.75 * doubTime) +
-	  rand() % (int)(0.15 * doubTime);
+      else if(selInitPhase < cycDistrib.at(0) + cycDistrib.at(1) +
+	      cycDistrib.at(2)){
+	inputTimer = (cycDur.at(0) + cycDur.at(1)) * doubTime +
+	  rand() % (int)(cycDur.at(2) * doubTime);
       }
       else{
-	inputTimer = (int)(0.9 * doubTime) +
-	  rand() % (int)(0.1 * doubTime);
+	inputTimer = (cycDur.at(0) + cycDur.at(1) + cycDur.at(2)) *
+	  doubTime + rand() % (int)(cycDur.at(3) * doubTime);
       }
       ((ProstCell *)m_comp->at(k))->setInTimer(inputTimer);
       (m_comp->at(k))->initModel();

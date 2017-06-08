@@ -22,11 +22,18 @@
 class Gen3DProstTissue : public Model {
 public:
   Gen3DProstTissue(const int nrow, const int ncol,
-		   const int nlayer);
+		   const int nlayer, Treatment *const treatment);
   Gen3DProstTissue(const int nrow, const int ncol, const int nlayer,
 		   const std::string nFInPO2,
 		   const std::string nFInTum,
 		   const std::string nFInVes,
+		   const double doubTime,
+		   std::vector<double> cycDur,
+		   std::vector<double> cycDistrib,
+		   const double apopDeadTime,
+		   const double necDeadTime,
+		   const double apopProb, std::vector<double> alpha,
+		   std::vector<double> beta,
 		   Treatment *const treatment);
   ~Gen3DProstTissue();
   virtual int calcModelOut();

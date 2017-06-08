@@ -9,6 +9,8 @@
 #ifndef DEF_PROSTCELL
 #define DEF_PROSTCELL
 
+#include <vector>
+
 #include "Gen3DProstTissue.hpp"
 #include "Model.hpp"
 #include "Treatment.hpp"
@@ -35,23 +37,43 @@
 #define OUT_STATE    m_out->at(0)
 
 //Internal Parameters
-#define PAR_TIMER    m_param->at(0)
-#define PAR_DOUBTIME m_param->at(1)
-#define PAR_LIMG1S   m_param->at(2)
-#define PAR_LIMSG2   m_param->at(3)
-#define PAR_LIMG2M   m_param->at(4)
-#define PAR_DEADTIME m_param->at(5)
-#define PAR_M        m_param->at(6)
-#define PAR_K        m_param->at(7)
-#define PAR_PO2      m_param->at(8)
-#define PAR_ALPHA    m_param->at(9)
-#define PAR_BETA     m_param->at(10)
-#define PAR_ACC_DOSE m_param->at(11)
+#define PAR_TIMER          m_param->at(0)
+#define PAR_DOUB_TIME      m_param->at(1)
+#define PAR_LIM_G1S        m_param->at(2)
+#define PAR_LIM_SG2        m_param->at(3)
+#define PAR_LIM_G2M        m_param->at(4)
+#define PAR_M              m_param->at(5)
+#define PAR_K              m_param->at(6)
+#define PAR_PO2            m_param->at(7)
+#define PAR_ALPHA          m_param->at(8)
+#define PAR_ALPHA_ALIVE    m_param->at(9)
+#define PAR_ALPHA_G1       m_param->at(10)
+#define PAR_ALPHA_S        m_param->at(11)
+#define PAR_ALPHA_G2       m_param->at(12)
+#define PAR_ALPHA_M        m_param->at(13)
+#define PAR_ALPHA_VES      m_param->at(14)
+#define PAR_ALPHA_DEAD     m_param->at(15)
+#define PAR_BETA           m_param->at(16)
+#define PAR_BETA_ALIVE     m_param->at(17)
+#define PAR_BETA_G1        m_param->at(18)
+#define PAR_BETA_S         m_param->at(19)
+#define PAR_BETA_G2        m_param->at(20)
+#define PAR_BETA_M         m_param->at(21)
+#define PAR_BETA_VES       m_param->at(22)
+#define PAR_BETA_DEAD      m_param->at(23)
+#define PAR_DEAD_TIME      m_param->at(24)
+#define PAR_APOP_PROB      m_param->at(25)
+#define PAR_APOP_DEAD_TIME m_param->at(26)
+#define PAR_NEC_DEAD_TIME  m_param->at(27)
+#define PAR_ACC_DOSE       m_param->at(28)
 
 class ProstCell: public Model{
 public :
-  ProstCell();
-  ProstCell(Model *const parent);
+  ProstCell(Model *const parent = 0);
+  ProstCell(const double doubTime, std::vector<double> cycDur,
+	    const double apopDeadTime, const double necDeadTime,
+	    const double apopProb, std::vector<double> alpha,
+	    std::vector<double> beta, Model *const parent = 0);
   virtual ~ProstCell();
   virtual int calcModelOut();
   virtual int initModel(const double DT);

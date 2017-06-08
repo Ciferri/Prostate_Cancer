@@ -60,30 +60,6 @@ void Simulator::start(const double simTime){
   //Initialization of the state of every cell
   m_model->initModel(m_DT);
   
-  if(m_model->getNumComp()==0){
-    for(int i=0;i<m_model->getNumOut();i++){
-      (m_outList->at(i))->push_back((m_model->getOut())->at(i));
-      //Copy of the outputs in outputList
-      m_outFile<<(*(m_outList->at(i))).at(toto)<<'\t';
-    }           
-  }
-  else {
-    for(int k=0;k<m_model->getNumComp();k++){
-      for(int i=0;i<(m_model->getComp()->at(k))->getNumOut();
-	  i++){
-	index = (m_model->getComp()->at(k))->getNumOut()*k+i;
-	(m_outList->at(index))->
-	  push_back((m_model->getComp()->at(k)->getOut())->
-		    at(i));
-	//Copy of the outputs in outputList
-	m_outFile<<(*(m_outList->at(index))).at(toto)<<'\t';
-      }
-    }
-  }
-  m_outFile<<endl ;
-  toto++;
-
-
   //It does nothing for the moment
   m_model->startModel();
     
