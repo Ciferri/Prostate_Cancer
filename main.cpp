@@ -36,7 +36,18 @@ int main(int argc, char *argv[]){
   Simulator *sim;
   double simTime;
 
-
+  if(argc != 27){
+    cout << "Incorrect number of parameters. 26 parameters expected"
+	 << endl;
+    cout << "doubTime G1Dur SDur G2Dur MDur G1Distrib SDistrib" <<
+      "G2Distrib MDistrib alphaAlive alphaTumG1 alphaTumS" <<
+      "alphaTumG2 alphaTumM alphaDead alphaVes betaAlive" <<
+      "betaTumG1 betaTumS betaTumG2 betaTumM betaDead betaVes" <<
+      "apopProb apopDeadTime necDeadTime" << endl;
+    return EXIT_FAILURE;
+    }
+  
+  
   nFTissueDim = "tissueDim.dat";
   nFInTum = "inTum.dat";
   nFInVes = "inVes.dat";
@@ -58,31 +69,37 @@ int main(int argc, char *argv[]){
     cout << "An error occurred while opening tissue dimensions file"
 	 << endl;
   }
-  doubTime = 1008;
+  doubTime = atof(argv[1]);
 
-  cycDur.at(0) = 0.55;
-  cycDur.at(1) = 0.2;
-  cycDur.at(2) = 0.15;
-  cycDur.at(3) = 0.1;
+  cycDur[0] = atof(argv[2]);
+  cycDur[1] = atof(argv[3]);
+  cycDur[2] = atof(argv[4]);
+  cycDur[3] = atof(argv[5]);
 
-  cycDistrib.at(0) = 0.6;
-  cycDistrib.at(1) = 0.25;
-  cycDistrib.at(2) = 0.075;
-  cycDistrib.at(3) = 0.075;
-
-  apopProb     = 0.8;
-  apopDeadTime = 234;
-  necDeadTime  = 468;
+  cycDistrib[0] = atof(argv[6]);
+  cycDistrib[1] = atof(argv[7]);
+  cycDistrib[2] = atof(argv[8]);
+  cycDistrib[3] = atof(argv[9]);
   
-  alpha.at(1) = 0.158;
-  alpha.at(2) = 0.113;
-  alpha.at(3) = 0.169;
-  alpha.at(4) = 0.189;
+  alpha[0] = atof(argv[10]);
+  alpha[1] = atof(argv[11]);
+  alpha[2] = atof(argv[12]);
+  alpha[3] = atof(argv[13]);
+  alpha[4] = atof(argv[14]);
+  alpha[5] = atof(argv[15]);
+  alpha[6] = atof(argv[16]);
 
-  beta.at(1) = 0.051;
-  beta.at(2) = 0.037;
-  beta.at(3) = 0.055;
-  beta.at(4) = 0.061;
+  beta[0] = atof(argv[17]);
+  beta[1] = atof(argv[18]);
+  beta[2] = atof(argv[19]);
+  beta[3] = atof(argv[20]);
+  beta[4] = atof(argv[21]);
+  beta[5] = atof(argv[22]);
+  beta[6] = atof(argv[23]);
+
+  apopProb     = atof(argv[24]);
+  apopDeadTime = atof(argv[25]);
+  necDeadTime  = atof(argv[26]);
   
   treatment = new Treatment();
   cout<<treatment<<endl;
