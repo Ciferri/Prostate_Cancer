@@ -6,12 +6,11 @@
  * @date 05.19.17 
  */
 
-#ifndef DEF_Simulator
-#define DEF_Simulator
+#ifndef DEF_SIMULATOR
+#define DEF_SIMULATOR
 
 #include "Model.hpp"
 #include "SimMeth.hpp"
-#include "Treatment.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -22,12 +21,11 @@ typedef std::vector<OutputData *> OutputDataList;
 class Simulator{	
 public:
   Simulator();
-  Simulator(Model *model, const double currentTime,
-	    const double DT);
+  Simulator(Model *model, const double DT);
   ~Simulator();
+  void initSim();
   void setModel(Model *model);
-  //void simulate( double currentTime, double DT );
-  void start(const double simTime);
+  void simulate(const double currentTime, const double simTime);
   void stop();
   
 private:
@@ -37,7 +35,6 @@ private:
   double m_DT;	
   double m_currentTime;
   Model *m_model;
-  Treatment *m_treatment;
 };
 
 #endif
