@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "treatment.hpp"
@@ -19,7 +20,7 @@ Treatment::Treatment(){
   m_interval  = 24.0; //h
   m_totalDose = 80.0; //Gy
 
-  //Sessions scheduled Mon-Fri
+  m_scheDescrip = "Mon-Fri";
   numSession=(int)(m_totalDose/m_fraction);
   while(accSession<=numSession){
     if((i+1)%7==6||(i+1)%7==0){
@@ -35,12 +36,52 @@ Treatment::Treatment(){
 
 
 Treatment::Treatment(const double fraction, const double totalDose,
-		     const double interval,
-		     const vector<bool> schedule){
+		     const double interval, const int schedule){
+  int accSession(0), i(0), numSession;
+  
   m_fraction  = fraction;
   m_interval  = interval;
   m_totalDose = totalDose;
-  m_schedule  = schedule;
+
+  switch(schedule){
+  case 1:
+    m_scheDescrip = "Mon-Sun";
+    while(accSession<=numSession){
+      m_schedule.push_back(true);
+      accSession++;
+    }
+    break;
+    
+  case 2:
+    m_scheDescrip = "Mon-Fri";
+    numSession=(int)(m_totalDose/m_fraction);
+    while(accSession<=numSession){
+      if((i+1)%7==6||(i+1)%7==0){
+	m_schedule.push_back(false);
+      }
+      else{
+	m_schedule.push_back(true);
+	accSession++;
+      }
+      i++;
+    }
+    break;
+    
+  default:
+    m_scheDescrip = "Mon-Fri";
+    numSession=(int)(m_totalDose/m_fraction);
+    while(accSession<=numSession){
+      if((i+1)%7==6||(i+1)%7==0){
+	m_schedule.push_back(false);
+      }
+      else{
+	m_schedule.push_back(true);
+	accSession++;
+      }
+      i++;
+    }
+    break;
+  }
 }
 
 
@@ -64,6 +105,11 @@ vector<bool> Treatment::getSchedule() const{
 }
 
 
+string Treatment::getScheDescrip() const{
+  return m_scheDescrip;
+}
+
+
 double Treatment::getTotalDose() const{
   return m_totalDose;
 }
@@ -74,6 +120,9 @@ ostream &operator<<(ostream &stream, Treatment *treatment){
     " Gy" << endl;
   stream << "Fraction = " << treatment->getFraction() << " Gy" <<
     endl;
+  stream << "Interval = " << treatment->getInterval() << " h" <<
+    endl;
+  stream << "Schedule = " << treatment->getScheDescrip() <<  endl;
   stream << "---------------------------------------------";
   return stream;
 }

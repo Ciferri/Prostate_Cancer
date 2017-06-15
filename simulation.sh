@@ -29,10 +29,16 @@ apopDeadTime=234
 necDeadTime=268
 Vmax=15.2
 Kconso=3.035
+tFraction=(2 3.1 2 2.7 1.8 2.4 2 3 3 2 3.4 2 3 1.8 2.5)
+tTotalDose=(80 62 76 70.2 75.6 72 74 60 57 78 64.6 74 60 73.8 70)
+interval=24
+schedule=2
+
 #for i in `seq 0 4`;
 #do
 i=0
-    #for j in `seq 1 5`;
+j=2
+    #for n in `seq 1 5`;
     #do
     ./m2slv01 $doubTime $G1Dur $SDur $G2Dur $MDur $G1Distrib\
 	      $SDistrib $G2Distrib $MDistrib $alphaAlive\
@@ -40,7 +46,8 @@ i=0
 	      ${tAlphaTumM[i]} $alphaDead $alphaVes $betaAlive\
 	      ${tBetaTumG1[i]} ${tBetaTumS[i]} ${tBetaTumG2[i]}\
 	      ${tBetaTumM[i]} $betaDead $betaVes $apopProb\
-	      $apopDeadTime $necDeadTime $Vmax $Kconso
+	      $apopDeadTime $necDeadTime $Vmax $Kconso\
+	      ${tFraction[j]} ${tTotalDose[j]} $interval $schedule
     #done
 #done
 octave printOutImg.m

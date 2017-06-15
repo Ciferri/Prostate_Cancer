@@ -33,6 +33,8 @@ int main(int argc, char *argv[]){
   double doubTime;
   double apopDeadTime, apopProb, necDeadTime;
   double KConso, Vmax;
+  int schedule;
+  double fraction, interval, totalDose;
   string nFInTum, nFInVes, nFTissueDim;
   vector<double> alpha(7, 0.0);
   vector<double> beta(7, 0.0);
@@ -42,14 +44,15 @@ int main(int argc, char *argv[]){
   RootSimulator *sim;
   double DT1, DT2, simTime;
 
-  if(argc != 29){
-    cout << "Incorrect number of parameters. 28 parameters expected"
+  if(argc != 33){
+    cout << "Incorrect number of parameters. 32 parameters expected"
 	 << endl;
     cout << "doubTime G1Dur SDur G2Dur MDur G1Distrib SDistrib" <<
       "G2Distrib MDistrib alphaAlive alphaTumG1 alphaTumS" <<
       "alphaTumG2 alphaTumM alphaDead alphaVes betaAlive" <<
       "betaTumG1 betaTumS betaTumG2 betaTumM betaDead betaVes" <<
-      "apopProb apopDeadTime necDeadTime Vmax KConso" << endl;
+      "apopProb apopDeadTime necDeadTime Vmax KConso fraction" <<
+      "interval totalDose schedule" << endl;
     return EXIT_FAILURE;
     }
   
@@ -108,8 +111,14 @@ int main(int argc, char *argv[]){
 
   Vmax   = atof(argv[27]);
   KConso = atof(argv[28]);
+
+  fraction  = atof(argv[29]);
+  totalDose = atof(argv[30]);
+  interval  = atof(argv[31]);
+  schedule  = atoi(argv[32]);
   
-  treatment = new Treatment();
+  treatment = new Treatment(fraction, totalDose, interval,
+			    schedule);
   cout<<treatment<<endl;
   
   model1 = new ProstTissue(nrow, ncol, nlayer, nFInTum, nFInVes,
