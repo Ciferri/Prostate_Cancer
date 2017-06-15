@@ -2,8 +2,9 @@
  * @file rootSimulator.hpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #ifndef DEF_ROOTSIMULATOR

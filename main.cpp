@@ -2,8 +2,9 @@
  * @file main.cpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]){
   double doubTime;
   double apopDeadTime, apopProb, necDeadTime;
   double KConso, Vmax;
-  string nFInPO2, nFInTum, nFInVes, nFTissueDim;
+  string nFInTum, nFInVes, nFTissueDim;
   vector<double> alpha(7, 0.0);
   vector<double> beta(7, 0.0);
   vector<double> cycDistrib(4, 0.0);
@@ -56,7 +57,6 @@ int main(int argc, char *argv[]){
   nFTissueDim = "tissueDim.dat";
   nFInTum = "inTum.dat";
   nFInVes = "inVes.dat";
-  nFInPO2 = "inPO2.dat";
 
   ifstream fTissueDim(nFTissueDim.c_str());
   if(fTissueDim.is_open()){
@@ -111,9 +111,9 @@ int main(int argc, char *argv[]){
   
   treatment = new Treatment();
   cout<<treatment<<endl;
-  //treatment = 0;
-  model1 = new Gen3DProstTissue(nrow, ncol, nlayer, nFInPO2,
-				nFInTum, nFInVes, doubTime, cycDur,
+  
+  model1 = new Gen3DProstTissue(nrow, ncol, nlayer, nFInTum,
+				nFInVes, doubTime, cycDur,
 				cycDistrib, apopDeadTime,
 				necDeadTime, apopProb, alpha, beta,
 				treatment);
@@ -124,9 +124,8 @@ int main(int argc, char *argv[]){
   DT2 = 1; //s;
   sim = new RootSimulator(coupler, DT1, DT2);
   simTime = treatment->getDuration();
-  //simTime = 2016;
   sim->initSim();
-  cout << "test2" << endl;
   sim->simulate(0.0, simTime);
+  sim->stop();
   return EXIT_SUCCESS;
 }

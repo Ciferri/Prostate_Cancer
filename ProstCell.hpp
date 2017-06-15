@@ -2,8 +2,9 @@
  * @file ProstCell.hpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #ifndef DEF_PROSTCELL
@@ -20,7 +21,7 @@
 #define IN_TUM       m_in->at(1)
 #define IN_DEAD      m_in->at(2)
 #define IN_VES       m_in->at(3)
-#define IN_PO2       m_in->at(4)
+//#define IN_PO2       m_in->at(4)
 #define IN_TIMER     m_in->at(5)
 
 //State variables

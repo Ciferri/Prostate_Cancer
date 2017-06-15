@@ -1,34 +1,36 @@
 /**
  * @file Simulator.cpp
  * @brief
- * @author Alfredo Hernandez
  * @author Carlos Sosa Marrero
- * @date 05.19.17 
+ * @author Nicolas Ciferri
+ * @author Alfredo Hernandez
+ * @date 05.19.17
  */
 
 #include <stdlib.h>
-
+#include <string>
 #include "Simulator.hpp"
 
 using namespace std;
 
 Simulator::Simulator(){
-  m_model=0;
+  m_model = 0;
   m_currentTime = 0.0;
   m_DT = 1; //h
   m_outList = new OutputDataList();
   m_simMeth = new SimMeth(euler);
-  //m_outFile.open("out.dat");
+  m_outFile.open("out.dat");
 }
 
 
-Simulator::Simulator(Model *model, const double DT){
+Simulator::Simulator(Model *model, const double DT,
+		     const string nFOut){
   m_model = model;
   m_currentTime = 0.0;
   m_DT = DT;
   m_outList = new OutputDataList();
   m_simMeth = new SimMeth (euler);
-  //m_outFile.open("out.dat");
+  m_outFile.open(nFOut.c_str());
 }
 
 
@@ -68,7 +70,9 @@ void Simulator::simulate(const double currentTime,
   m_currentTime = currentTime;
   for(int j(0); j < numIter; j++) {
     //Update of the state of every cell composing the tissue
-    m_model->updateModel(m_currentTime, m_DT);
+    if(m_model->updateModel(m_currentTime, m_DT)){
+      break;
+    }
     m_model->calcModelOut();
              
     if (j % 6 == 0) {
@@ -77,7 +81,7 @@ void Simulator::simulate(const double currentTime,
 	for(int i(0); i < m_model->getNumOut(); i++){
 	  m_outList->at(i)->push_back(m_model->getOut()->at(i));
 	  //Copy of the outputs in outputList
-	  //m_outFile<<(*(m_outList->at(i))).at(toto)<<'\t';
+	  m_outFile<<(*(m_outList->at(i))).at(toto)<<'\t';
 	}           
       }
       else {
@@ -89,11 +93,11 @@ void Simulator::simulate(const double currentTime,
 	      push_back(m_model->getComp()->at(k)->getOut()->
 			at(i));
 	    //Copy of the outputs in outputList
-	    //m_outFile << (*(m_outList->at(index))).at(toto) << '\t';
+	    m_outFile << (*(m_outList->at(index))).at(toto) << '\t';
 	  }
 	}
       }
-      //m_outFile << endl ;
+      m_outFile << endl ;
       toto++;
     }
     m_currentTime += m_DT;
@@ -103,5 +107,5 @@ void Simulator::simulate(const double currentTime,
 
 void Simulator::stop(){
   m_model->terminateModel();
-  //m_outFile.close();
+  m_outFile.close();
 }

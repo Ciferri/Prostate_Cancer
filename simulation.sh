@@ -29,8 +29,9 @@ apopDeadTime=234
 necDeadTime=268
 Vmax=15.2
 Kconso=3.035
-for i in `seq 0 4`;
-do
+#for i in `seq 0 4`;
+#do
+i=0
     #for j in `seq 1 5`;
     #do
     ./m2slv01 $doubTime $G1Dur $SDur $G2Dur $MDur $G1Distrib\
@@ -41,5 +42,5 @@ do
 	      ${tBetaTumM[i]} $betaDead $betaVes $apopProb\
 	      $apopDeadTime $necDeadTime $Vmax $Kconso
     #done
-done
+#done
 octave printOutImg.m

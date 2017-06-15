@@ -2,8 +2,9 @@
  * @file ProstCell.cpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #include <iostream>
@@ -137,7 +138,7 @@ ProstCell::~ProstCell(){
 
 
 int ProstCell::calcModelOut(){
-  OUT_STATE = ST_ALIVE + 2*ST_TUM + 3*ST_VES + 4*ST_DEAD;	    
+  OUT_STATE = ST_ALIVE + 2 * ST_TUM + 3 * ST_VES + 4 * ST_DEAD;	    
   return 0;
 }
 
@@ -191,7 +192,8 @@ int ProstCell::initModel(const double DT){
     }
   }
 
-  PAR_PO2 = IN_PO2;
+  //PAR_PO2 = IN_PO2;
+  PAR_PO2 = m_in->at(4);
   
   return 0;
 }
@@ -258,7 +260,8 @@ int ProstCell::updateModel(const double currentTime,
     }
   }
 
-  PAR_PO2 = IN_PO2;
+  //PAR_PO2 = IN_PO2;
+  PAR_PO2 = m_in->at(4);
   
   calcTumGrowth();
 
@@ -448,7 +451,7 @@ void ProstCell::setInDead(const double input){
 
 
 void ProstCell::setInPO2(const double input){
-  IN_PO2 = input;
+  m_in->at(4) = input;
   
 }
 

@@ -2,6 +2,7 @@
  * @file coupler.cpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
  * @date 05.19.17 
  */
@@ -42,8 +43,8 @@ int Coupler::updateModel(const double currentTime,
   if(m_comp->at(0)->getNumComp() ==  m_comp->at(0)->getNumComp()){
     for(int k(0); k <  m_comp->at(0)->getNumComp(); k++){
       ((ProstCell *) m_comp->at(0)->getComp()->at(k))->
-	setInPO2(m_comp->at(1)->getComp()->at(k)->calcModelOut());
-     cout << m_comp->at(1)->getComp()->at(k)->calcModelOut() << endl;
+	setInPO2(m_comp->at(1)->getComp()->at(k)->getOut()->at(0));
+      //cout << m_comp->at(1)->getComp()->at(k)->getOut()->at(0) << endl;
     }
   }
 }

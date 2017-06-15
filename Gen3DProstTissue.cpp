@@ -1,10 +1,10 @@
-
 /**
  * @file Gen3DProstTissue.cpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #include <iostream>
@@ -38,7 +38,6 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 
 Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   const int nlayer,
-				   const string nFInPO2,
 				   const string nFInTum,
 				   const string nFInVes,
 				   const double doubTime,
@@ -51,9 +50,8 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 				   vector<double> beta,
 				   Treatment *const treatment) :
   Model(0, 0, 0, 1, nrow * ncol * nlayer){
-  double inputPO2, inputTimer, inputTum, inputVes, selInitPhase;
+  double inputTimer, inputTum, inputVes, selInitPhase;
   vector<Model **> map2D;
-  ifstream fInPO2(nFInPO2.c_str());
   ifstream fInTum(nFInTum.c_str());
   ifstream fInVes(nFInVes.c_str());
 
@@ -100,12 +98,8 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
     }
   }
   
-  //Initialization of the PO2 and cells state 
-  if(fInPO2.is_open() == 0){
-    cout << "An error occurred while opening initial PO2 data file"
-	 << endl;
-  }
-  else if(fInTum.is_open() == 0){
+  //Initialization of the cells state 
+  if(fInTum.is_open() == 0){
     cout << "An error occurred while opening initial tumor" <<
       "data file" << endl;
   }
@@ -116,13 +110,6 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
   else{
     srand(time(NULL));
     for(int k(0); k < m_numComp; k++){
-      if(fInPO2 >> inputPO2){
-	((ProstCell *)m_comp->at(k))->setInPO2(inputPO2);
-      }
-      else{
-	cout << "Insufficient data in PO2 file"<<endl;
-	break;
-      }
       if(fInTum >> inputTum){
 	((ProstCell *)m_comp->at(k))->setInTum(inputTum);
       }
@@ -167,7 +154,6 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
       ((ProstCell *)m_comp->at(k))->setInTum(0.0);
       ((ProstCell *)m_comp->at(k))->setInVes(0.0);
     }
-    fInPO2.close();
     fInTum.close();
     fInVes.close();
   }

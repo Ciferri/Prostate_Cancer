@@ -1,9 +1,10 @@
 /**
  * @file Model.cpp
  * @brief
- * @author Alfredo Hernandez
  * @author Carlos Sosa Marrero
- * @date 05.19.17 
+ * @author Nicolas Ciferri
+ * @author Alfredo Hernandez
+ * @date 05.19.17
  */
 
 #include "Model.hpp"
@@ -35,11 +36,6 @@ Model::~Model(){
   delete m_out;
   delete m_param;
   delete m_comp;
-}
-
-
-int Model::terminateModel(){
-  return 0;
 }
 
 

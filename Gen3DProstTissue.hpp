@@ -2,8 +2,9 @@
  * @file Gen3DProstTissue.hpp
  * @brief
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
  * @author Alfredo Hernandez
- * @date 05.19.17 
+ * @date 05.19.17
  */
 
 #ifndef DEF_Gen3DProstTissue
@@ -24,7 +25,6 @@ public:
   Gen3DProstTissue(const int nrow, const int ncol,
 		   const int nlayer, Treatment *const treatment);
   Gen3DProstTissue(const int nrow, const int ncol, const int nlayer,
-		   const std::string nFInPO2,
 		   const std::string nFInTum,
 		   const std::string nFInVes,
 		   const double doubTime,

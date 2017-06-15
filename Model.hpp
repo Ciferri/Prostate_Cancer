@@ -1,9 +1,10 @@
 /**
  * @file Model.hpp
  * @brief
- * @author Alfredo Hernandez
  * @author Carlos Sosa Marrero
- * @date 05.19.17 
+ * @author Nicolas Ciferri
+ * @author Alfredo Hernandez
+ * @date 05.19.17
  */
 
 #ifndef DEF_MODEL
@@ -22,7 +23,7 @@ public :
   virtual int initModel(const double DT = 0) = 0;
   virtual int updateModel(const double currentTime = 0,
 			  const double DT = 0 ) = 0;
-  virtual int terminateModel();
+  virtual int terminateModel() = 0;
   virtual int startModel();
   DoubleVect *getIn() const;
   DoubleVect *getSt() const;

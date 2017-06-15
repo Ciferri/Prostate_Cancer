@@ -1,8 +1,9 @@
 /**
  * @file Simulator.hpp
  * @brief
- * @author Alfredo Hernandez
  * @author Carlos Sosa Marrero
+ * @author Nicolas Ciferri
+ * @author Alfredo Hernandez
  * @date 05.19.17 
  */
 
@@ -11,7 +12,7 @@
 
 #include "Model.hpp"
 #include "SimMeth.hpp"
-
+#include <string>
 #include <iostream>
 #include <fstream>
 
@@ -21,7 +22,7 @@ typedef std::vector<OutputData *> OutputDataList;
 class Simulator{	
 public:
   Simulator();
-  Simulator(Model *model, const double DT);
+  Simulator(Model *model, const double DT, const std::string nFOut);
   ~Simulator();
   void initSim();
   void setModel(Model *model);
