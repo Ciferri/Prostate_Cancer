@@ -112,11 +112,10 @@ int main(int argc, char *argv[]){
   treatment = new Treatment();
   cout<<treatment<<endl;
   
-  model1 = new Gen3DProstTissue(nrow, ncol, nlayer, nFInTum,
-				nFInVes, doubTime, cycDur,
-				cycDistrib, apopDeadTime,
-				necDeadTime, apopProb, alpha, beta,
-				treatment);
+  model1 = new ProstTissue(nrow, ncol, nlayer, nFInTum, nFInVes,
+			   doubTime, cycDur, cycDistrib,
+			   apopDeadTime, necDeadTime, apopProb,
+			   alpha, beta, treatment);
   model2 = new diffusion3D(nrow, ncol, nlayer, nFInVes, Vmax,
 			   KConso);
   coupler = new Coupler(model1, model2);

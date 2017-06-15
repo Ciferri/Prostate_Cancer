@@ -71,8 +71,7 @@ ProstCell::ProstCell(Model *const parent) : Model(6, 8, 1, 29, 0){
 }
 
 
-ProstCell::ProstCell(const double doubTime,
-		     vector <double> cycDur,
+ProstCell::ProstCell(const double doubTime, vector <double> cycDur,
 		     const double apopDeadTime,
 		     const double necDeadTime,
 		     const double apopProb, vector<double> alpha,
@@ -129,7 +128,7 @@ ProstCell::ProstCell(const double doubTime,
   
   m_parent = parent;
   m_edge = new vector<ProstCell *>((unsigned int)0, 0);
-  m_treatment = ((Gen3DProstTissue *)m_parent)->getTreatment();
+  m_treatment = ((ProstTissue *)m_parent)->getTreatment();
 }
 
 
@@ -348,7 +347,7 @@ void ProstCell::calcTumGrowth(){
   
   if(PAR_TIMER >= PAR_DOUB_TIME){
     PAR_TIMER = 0;
-    if(ST_TUM && ((Gen3DProstTissue *)m_parent)->getNumAlive()){
+    if(ST_TUM && ((ProstTissue *)m_parent)->getNumAlive()){
       newTumCell = searchSpace();
       newTumCell->setInTum(1.0);
       newTumCell->PAR_TIMER = 0;

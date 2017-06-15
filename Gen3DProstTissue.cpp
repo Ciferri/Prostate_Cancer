@@ -18,9 +18,9 @@
 
 using namespace std;
 
-Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
-				   const int nlayer,
-				   Treatment *const treatment) :
+ProstTissue::ProstTissue(const int nrow, const int ncol,
+			 const int nlayer,
+			 Treatment *const treatment) :
   Model(0, 0, 0, 1, nrow * ncol * nlayer){
   m_nrow   = nrow;
   m_ncol   = ncol;
@@ -36,19 +36,17 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 }
 
 
-Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
-				   const int nlayer,
-				   const string nFInTum,
-				   const string nFInVes,
-				   const double doubTime,
-				   vector<double> cycDur,
-				   vector<double> cycDistrib,
-				   const double apopDeadTime,
-				   const double necDeadTime,
-				   const double apopProb,
-				   vector<double> alpha,
-				   vector<double> beta,
-				   Treatment *const treatment) :
+ProstTissue::ProstTissue(const int nrow, const int ncol,
+			 const int nlayer,
+			 const string nFInTum, const string nFInVes,
+			 const double doubTime,
+			 vector<double> cycDur,
+			 vector<double> cycDistrib,
+			 const double apopDeadTime,
+			 const double necDeadTime,
+			 const double apopProb,
+			 vector<double> alpha, vector<double> beta,
+			 Treatment *const treatment) :
   Model(0, 0, 0, 1, nrow * ncol * nlayer){
   double inputTimer, inputTum, inputVes, selInitPhase;
   vector<Model **> map2D;
@@ -160,11 +158,11 @@ Gen3DProstTissue::Gen3DProstTissue(const int nrow, const int ncol,
 }
 
 
-Gen3DProstTissue::~Gen3DProstTissue(){
+ProstTissue::~ProstTissue(){
 }
 
 
-int Gen3DProstTissue::calcModelOut(){
+int ProstTissue::calcModelOut(){
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->calcModelOut();
   }
@@ -172,7 +170,7 @@ int Gen3DProstTissue::calcModelOut(){
 }
 
 
-int Gen3DProstTissue::initModel(const double DT){
+int ProstTissue::initModel(const double DT){
   PAR_INIT_NUM_TUM = getNumTum();
   m_flag = 0;
   cout << "Total number of cells = " << m_numComp << endl;
@@ -195,7 +193,7 @@ int Gen3DProstTissue::initModel(const double DT){
 
 
 //It does nothing for the moment
-int Gen3DProstTissue::startModel(){
+int ProstTissue::startModel(){
   for (int k(0) ;k < m_numComp; k++){
     (m_comp->at(k))->startModel();
   }
@@ -203,7 +201,7 @@ int Gen3DProstTissue::startModel(){
 }
 
 
-int Gen3DProstTissue::terminateModel(){
+int ProstTissue::terminateModel(){
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->terminateModel();
   }
@@ -222,8 +220,8 @@ int Gen3DProstTissue::terminateModel(){
 }
 
 
-int Gen3DProstTissue::updateModel(const double currentTime,
-				  const double DT){
+int ProstTissue::updateModel(const double currentTime,
+			     const double DT){
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->updateModel(currentTime, DT);
   }
@@ -259,7 +257,7 @@ int Gen3DProstTissue::updateModel(const double currentTime,
 }
 
 
-int Gen3DProstTissue::getNumAlive() const{
+int ProstTissue::getNumAlive() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getAlive()){
@@ -270,7 +268,7 @@ int Gen3DProstTissue::getNumAlive() const{
 }
 
 
-int Gen3DProstTissue::getNumDead() const{
+int ProstTissue::getNumDead() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getDead()){
@@ -281,7 +279,7 @@ int Gen3DProstTissue::getNumDead() const{
 }
 
 
-int Gen3DProstTissue::getNumG1() const{
+int ProstTissue::getNumG1() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getG1()){
@@ -292,7 +290,7 @@ int Gen3DProstTissue::getNumG1() const{
 }
 
 
-int Gen3DProstTissue::getNumG2() const{
+int ProstTissue::getNumG2() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getG2()){
@@ -303,7 +301,7 @@ int Gen3DProstTissue::getNumG2() const{
 }
 
 
-int Gen3DProstTissue::getNumM() const{
+int ProstTissue::getNumM() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getM()){
@@ -314,7 +312,7 @@ int Gen3DProstTissue::getNumM() const{
 }
 
 
-int Gen3DProstTissue::getNumS() const{
+int ProstTissue::getNumS() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getS()){
@@ -325,7 +323,7 @@ int Gen3DProstTissue::getNumS() const{
 }
 
 
-int Gen3DProstTissue::getNumTum() const{
+int ProstTissue::getNumTum() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getTum()){
@@ -336,7 +334,7 @@ int Gen3DProstTissue::getNumTum() const{
 }
 
 
-int Gen3DProstTissue::getNumVes() const{
+int ProstTissue::getNumVes() const{
   int count(0);
   for(int k(0); k < m_numComp; k++){
     if(((ProstCell *)m_comp->at(k))->getVes()){
@@ -347,12 +345,12 @@ int Gen3DProstTissue::getNumVes() const{
 }
 
 
-Treatment *Gen3DProstTissue::getTreatment() const{
+Treatment *ProstTissue::getTreatment() const{
   return m_treatment;
 }
 
 
-void Gen3DProstTissue::printNeededDose() const{
+void ProstTissue::printNeededDose() const{
   string perc;
   
   switch(m_flag){
