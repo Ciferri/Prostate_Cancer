@@ -1,5 +1,5 @@
 /**
- * @file Treatment.cpp
+ * @file treatment.cpp
  * @brief
  * @author Carlos Sosa Marrero
  * @date 05.19.17 
@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Treatment.hpp"
+#include "treatment.hpp"
 
 using namespace std;
 

@@ -11,8 +11,8 @@
 #define DEF_ROOTSIMULATOR
 
 #include "coupler.hpp"
-#include "Model.hpp"
-#include "Simulator.hpp"
+#include "model.hpp"
+#include "simulator.hpp"
 
 class RootSimulator{
 public:

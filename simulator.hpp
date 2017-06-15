@@ -1,5 +1,5 @@
 /**
- * @file Simulator.hpp
+ * @file simulator.hpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -10,8 +10,8 @@
 #ifndef DEF_SIMULATOR
 #define DEF_SIMULATOR
 
-#include "Model.hpp"
-#include "SimMeth.hpp"
+#include "model.hpp"
+#include "simMeth.hpp"
 #include <string>
 #include <iostream>
 #include <fstream>

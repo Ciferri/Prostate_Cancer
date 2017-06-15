@@ -1,5 +1,5 @@
 /**
- * @file Gen3DProstTissue.hpp
+ * @file prostTissue.hpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -13,9 +13,9 @@
 #include <vector>
 #include <string>
 
-#include "Model.hpp"
-#include "ProstCell.hpp"
-#include "Treatment.hpp"
+#include "model.hpp"
+#include "prostCell.hpp"
+#include "treatment.hpp"
 
 //Internal parameters
 #define PAR_INIT_NUM_TUM m_param->at(0)

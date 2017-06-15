@@ -8,7 +8,7 @@
  */
 
 #include "prostateCell.hpp"
-#include "Treatment.hpp"
+#include "treatment.hpp"
 
 #include <iostream>
 #include <math.h>

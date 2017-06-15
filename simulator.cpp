@@ -1,5 +1,5 @@
 /**
- * @file Simulator.cpp
+ * @file simulator.cpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include <string>
-#include "Simulator.hpp"
+#include "simulator.hpp"
 
 using namespace std;
 

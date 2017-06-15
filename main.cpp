@@ -17,13 +17,13 @@
 
 #include "coupler.hpp"
 #include "diffusion3D.hpp"
-#include "Gen3DProstTissue.hpp"
-#include "Model.hpp"
+#include "prostTissue.hpp"
+#include "model.hpp"
 #include "prostateCell.hpp"
-#include "ProstCell.hpp"
+#include "prostCell.hpp"
 #include "rootSimulator.hpp"
-#include "Simulator.hpp"
-#include "Treatment.hpp"
+#include "simulator.hpp"
+#include "treatment.hpp"
 
 using namespace std;
 

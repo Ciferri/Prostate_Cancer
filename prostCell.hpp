@@ -1,5 +1,5 @@
 /**
- * @file ProstCell.hpp
+ * @file prostCell.hpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -12,9 +12,9 @@
 
 #include <vector>
 
-#include "Gen3DProstTissue.hpp"
-#include "Model.hpp"
-#include "Treatment.hpp"
+#include "prostTissue.hpp"
+#include "model.hpp"
+#include "treatment.hpp"
 
 //Inputs
 #define IN_ALIVE     m_in->at(0)

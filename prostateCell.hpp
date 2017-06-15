@@ -10,10 +10,10 @@
 #ifndef DEF_PROSTACELL
 #define DEF_PROSTACELL
 
-#include "Gen3DProstTissue.hpp"
+#include "prostTissue.hpp"
 #include "diffusion3D.hpp"
-#include "Model.hpp"
-#include "Treatment.hpp"
+#include "model.hpp"
+#include "treatment.hpp"
 
 //m_in
 #define IN_PO2        m_in->at(0)

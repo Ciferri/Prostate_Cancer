@@ -1,5 +1,5 @@
 /**
- * @file Model.cpp
+ * @file model.cpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -7,7 +7,7 @@
  * @date 05.19.17
  */
 
-#include "Model.hpp"
+#include "model.hpp"
 #include <iostream>
 
 using namespace std;

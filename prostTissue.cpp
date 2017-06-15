@@ -1,5 +1,5 @@
 /**
- * @file Gen3DProstTissue.cpp
+ * @file prostTissue.cpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -14,7 +14,7 @@
 #include <time.h>
 #include <vector>
 
-#include "Gen3DProstTissue.hpp"
+#include "prostTissue.hpp"
 
 using namespace std;
 

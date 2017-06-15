@@ -1,5 +1,5 @@
 /**
- * @file ProstCell.cpp
+ * @file prostCell.cpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri
@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "ProstCell.hpp"
+#include "prostCell.hpp"
 
 using namespace std;
 

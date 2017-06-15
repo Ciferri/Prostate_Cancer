@@ -1,5 +1,5 @@
 /**
- * @file Treatment.hpp
+ * @file treatment.hpp
  * @brief
  * @author Carlos Sosa Marrero
  * @date 05.19.17 

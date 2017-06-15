@@ -10,8 +10,8 @@
 #ifndef DEF_COUPLER
 #define DEF_COUPLER
 
-#include "Gen3DProstTissue.hpp"
-#include "Model.hpp"
+#include "prostTissue.hpp"
+#include "model.hpp"
 
 //#define MODEL1 m_comp->at(0)
 //#define MODEL2 m_comp->at(1)

@@ -1,5 +1,5 @@
 /**
- * @file Model.hpp
+ * @file model.hpp
  * @brief
  * @author Carlos Sosa Marrero
  * @author Nicolas Ciferri

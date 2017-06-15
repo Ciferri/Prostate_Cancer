@@ -1,5 +1,5 @@
 /**
- * @file SimMeth.hpp
+ * @file simMeth.hpp
  * @brief
  * @author Alfredo Hernandez
  */
@@ -7,7 +7,7 @@
 #ifndef SimMeth_h_h
 #define SimMeth_h_h
 
-#include "Model.hpp"
+#include "model.hpp"
 
 enum methName {rk4,euler,ac};
 
