@@ -38,16 +38,17 @@ schedule=2
 #do
 i=0
 j=2
-    #for n in `seq 1 5`;
-    #do
-    ./m2slv01 $doubTime $G1Dur $SDur $G2Dur $MDur $G1Distrib\
-	      $SDistrib $G2Distrib $MDistrib $alphaAlive\
-	      ${tAlphaTumG1[i]} ${tAlphaTumS[i]} ${tAlphaTumG2[i]}\
-	      ${tAlphaTumM[i]} $alphaDead $alphaVes $betaAlive\
-	      ${tBetaTumG1[i]} ${tBetaTumS[i]} ${tBetaTumG2[i]}\
-	      ${tBetaTumM[i]} $betaDead $betaVes $apopProb\
-	      $apopDeadTime $necDeadTime $Vmax $Kconso\
-	      ${tFraction[j]} ${tTotalDose[j]} $interval $schedule
-    #done
+#for n in `seq 1 5`;
+#do
+./m2slv01 $doubTime $G1Dur $SDur $G2Dur $MDur $G1Distrib\
+	  $SDistrib $G2Distrib $MDistrib $alphaAlive\
+	  ${tAlphaTumG1[i]} ${tAlphaTumS[i]} ${tAlphaTumG2[i]}\
+	  ${tAlphaTumM[i]} $alphaDead $alphaVes $betaAlive\
+	  ${tBetaTumG1[i]} ${tBetaTumS[i]} ${tBetaTumG2[i]}\
+	  ${tBetaTumM[i]} $betaDead $betaVes $apopProb\
+	  $apopDeadTime $necDeadTime $Vmax $Kconso\
+	  ${tFraction[j]} ${tTotalDose[j]} $interval $schedule
 #done
+#done
+echo "Printing output images"
 octave printOutImg.m
