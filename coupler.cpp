@@ -22,15 +22,10 @@ Coupler::~Coupler(){
 
 
 int Coupler::calcModelOut(){
-
 }
 
 
 int Coupler::initModel(const double DT){
-}
-
-
-int Coupler::startModel(){
 }
 
 
@@ -44,7 +39,6 @@ int Coupler::updateModel(const double currentTime,
     for(int k(0); k <  m_comp->at(0)->getNumComp(); k++){
       ((ProstCell *) m_comp->at(0)->getComp()->at(k))->
 	setInPO2(m_comp->at(1)->getComp()->at(k)->getOut()->at(0));
-      //cout << m_comp->at(1)->getComp()->at(k)->getOut()->at(0) << endl;
     }
   }
 }

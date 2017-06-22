@@ -78,7 +78,6 @@ public :
   virtual ~ProstCell();
   virtual int calcModelOut();
   virtual int initModel(const double DT);
-  virtual int startModel();
   virtual int terminateModel();
   virtual int updateModel(const double currentTime,
 			  const double DT);

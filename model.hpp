@@ -24,10 +24,8 @@ public :
   virtual int updateModel(const double currentTime = 0,
 			  const double DT = 0 ) = 0;
   virtual int terminateModel() = 0;
-  virtual int startModel();
   DoubleVect *getIn() const;
   DoubleVect *getSt() const;
-  DoubleVect *getDerivSt() const;
   DoubleVect *getOut() const;
   DoubleVect *getParam() const;
   std::vector<Model*> *getComp() const;
@@ -45,7 +43,6 @@ protected:
   int m_numComp;
   DoubleVect *m_in;	
   DoubleVect *m_st;   
-  DoubleVect *m_derivSt; //cache the value of states during integ
   DoubleVect *m_out; 
   DoubleVect *m_param; 
   std::vector<Model *>  *m_comp;

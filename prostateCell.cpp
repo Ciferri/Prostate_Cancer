@@ -61,10 +61,6 @@ int prostateCell::initModel(double alive,double dead, double tumor, double ves, 
   return 0;
 }
 
-int prostateCell::startModel(){
-  return 0;
-}
-
 
 int prostateCell::terminateModel(){
   return 0;

@@ -137,7 +137,7 @@ ProstCell::~ProstCell(){
 
 
 int ProstCell::calcModelOut(){
-  OUT_STATE = ST_ALIVE + 2 * ST_TUM + 3 * ST_VES + 4 * ST_DEAD;	    
+  OUT_STATE = ST_ALIVE + 2 * ST_TUM + 3 * ST_VES + 4 * ST_DEAD;
   return 0;
 }
 
@@ -194,11 +194,6 @@ int ProstCell::initModel(const double DT){
   //PAR_PO2 = IN_PO2;
   PAR_PO2 = m_in->at(4);
   
-  return 0;
-}
-
-
-int ProstCell::startModel(){
   return 0;
 }
 

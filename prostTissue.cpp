@@ -21,7 +21,7 @@ using namespace std;
 ProstTissue::ProstTissue(const int nrow, const int ncol,
 			 const int nlayer,
 			 Treatment *const treatment) :
-  Model(0, 0, 0, 1, nrow * ncol * nlayer){
+  Model(0, 0, 2, 2, nrow * ncol * nlayer){
   m_nrow   = nrow;
   m_ncol   = ncol;
   m_nlayer = nlayer;
@@ -47,7 +47,7 @@ ProstTissue::ProstTissue(const int nrow, const int ncol,
 			 const double apopProb,
 			 vector<double> alpha, vector<double> beta,
 			 Treatment *const treatment) :
-  Model(0, 0, 0, 1, nrow * ncol * nlayer){
+  Model(0, 0, 2, 2, nrow * ncol * nlayer){
   double inputTimer, inputTum, inputVes, selInitPhase;
   vector<Model **> map2D;
   ifstream fInTum(nFInTum.c_str());
@@ -166,12 +166,17 @@ int ProstTissue::calcModelOut(){
   for(int k(0); k < m_numComp; k++){
     (m_comp->at(k))->calcModelOut();
   }
+  OUT_TUM_DENS = (double)getNumTum() / (double)m_numComp * 100;
+  OUT_VES_DENS = (double)getNumVes() / (double)m_numComp * 100;
   return 0;
 }
 
 
 int ProstTissue::initModel(const double DT){
-  PAR_INIT_NUM_TUM = getNumTum();
+  PAR_INIT_TUM_DENS = (double)getNumTum() / (double)m_numComp * 100;
+  OUT_TUM_DENS = PAR_INIT_TUM_DENS;
+  PAR_INIT_VES_DENS = (double)getNumVes() / (double)m_numComp * 100;
+  OUT_VES_DENS = PAR_INIT_VES_DENS;
   m_flag = 0;
   cout << "Total number of cells = " << m_numComp << endl;
   cout << "Initial number of cells at G1 = " << getNumG1() << endl;
@@ -181,22 +186,13 @@ int ProstTissue::initModel(const double DT){
   cout << "Initial number of living cells = "
        << getNumAlive() << endl;
   cout << "Initial number of tumor cells = " << getNumTum() << endl;
-  cout << "Initial tumor density: " <<
-    (double)getNumTum() / (double)m_numComp * 100.0 << endl;
+  cout << "Initial tumor density: " << PAR_INIT_TUM_DENS << "%"
+       << endl;
   cout << "Initial number of vessels = " << getNumVes() << endl;
-  cout << "Initial vascular density: " <<
-    (double)getNumVes() / (double)m_numComp * 100.0 << endl;
+  cout << "Initial vascular density: " << PAR_INIT_VES_DENS << "%"
+       << endl;
   cout << "Initial number of dead cells = " << getNumDead() << endl;
   cout << "---------------------------------------------" << endl;
-  return 0;
-}
-
-
-//It does nothing for the moment
-int ProstTissue::startModel(){
-  for (int k(0) ;k < m_numComp; k++){
-    (m_comp->at(k))->startModel();
-  }
   return 0;
 }
 
@@ -213,9 +209,14 @@ int ProstTissue::terminateModel(){
   cout << "Final number of living cells = "
        << getNumAlive() << endl;
   cout << "Final number of tumor cells = " << getNumTum() << endl;
+  cout << "Final tumor density: " << OUT_TUM_DENS << "%" << endl;
+  cout << (PAR_INIT_TUM_DENS - OUT_TUM_DENS) / PAR_INIT_TUM_DENS
+    * 100 << "% of initial tumor cells killed" << endl;
   cout << "Final number of vessels = " << getNumVes() << endl;
+  cout << "Final vascular density: " << OUT_VES_DENS << "%" << endl;
   cout << "Final number of dead cells = "<< getNumDead() << endl;
-  
+
+  cout << "---------------------------------------------" << endl;
   return 0;
 }
 
@@ -229,7 +230,7 @@ int ProstTissue::updateModel(const double currentTime,
   if(m_treatment){
     int print(0);
     double tumSurv;
-    tumSurv = getNumTum() / PAR_INIT_NUM_TUM;
+    tumSurv = OUT_TUM_DENS / PAR_INIT_TUM_DENS;
     if(tumSurv < 0.5){
       print = 1;
     }

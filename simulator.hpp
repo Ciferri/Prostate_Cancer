@@ -16,13 +16,10 @@
 #include <iostream>
 #include <fstream>
 
-typedef std::vector<double> OutputData;
-typedef std::vector<OutputData *> OutputDataList;
-
 class Simulator{	
 public:
   Simulator();
-  Simulator(Model *model, const double DT, const std::string nFOut);
+  Simulator(Model *model, const double DT);
   ~Simulator();
   void initSim();
   void setModel(Model *model);
@@ -30,9 +27,7 @@ public:
   void stop();
   
 private:
-  OutputDataList *m_outList;
   SimMeth *m_simMeth;
-  std::ofstream m_outFile;
   double m_DT;	
   double m_currentTime;
   Model *m_model;

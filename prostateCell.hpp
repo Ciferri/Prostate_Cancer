@@ -50,7 +50,6 @@ public :
   virtual int calcModelOut();
   virtual int initModel(const double DT);
   virtual int initModel(double alive,double dead, double tumor, double ves, double state);
-  virtual int startModel();
   virtual int terminateModel();
   virtual int updateModel(const double currentTime, const double DT);
   double calcOER() const;

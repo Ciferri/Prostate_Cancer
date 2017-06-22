@@ -82,13 +82,6 @@ diffusion3D::~diffusion3D()
 {
 }
 
-int diffusion3D::startModel()
-{
-  for (int i=0;i<getNumComp();i++)
-    (m_comp->at(i))->startModel();
-
-  return 0;
-}
 
 /**
  *

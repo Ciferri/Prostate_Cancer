@@ -69,7 +69,6 @@ class diffusion3D : public Model {
   virtual int calcModelOut();
   virtual int updateModel(double time, const double DT);
   virtual int terminateModel();
-  virtual int startModel();
   virtual int Coord_XY_to_K(int x, int y);
   //virtual int *Coord_K_to_XY(int k);
 

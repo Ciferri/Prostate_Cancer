@@ -17,8 +17,14 @@
 #include "prostCell.hpp"
 #include "treatment.hpp"
 
+//Outputs
+#define OUT_TUM_DENS m_out->at(0)
+#define OUT_VES_DENS m_out->at(1)
+
 //Internal parameters
-#define PAR_INIT_NUM_TUM m_param->at(0)
+#define PAR_INIT_TUM_DENS m_param->at(0)
+#define PAR_INIT_VES_DENS m_param->at(1)
+
 
 class ProstTissue : public Model {
 public:
@@ -35,7 +41,6 @@ public:
   ~ProstTissue();
   virtual int calcModelOut();
   virtual int initModel(const double DT);
-  virtual int startModel();
   virtual int terminateModel();
   virtual int updateModel(const double currentTime,
 			  const double DT);

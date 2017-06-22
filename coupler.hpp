@@ -22,10 +22,9 @@ public :
   virtual ~Coupler();
   virtual int calcModelOut();
   virtual int initModel(const double DT);
-  virtual int startModel();
   virtual int terminateModel();
-  virtual int updateModel(const double currentTime,
-			  const double DT);
+  virtual int updateModel(const double currentTime = 0,
+			  const double DT = 0);
   Model *getModel1() const;
   Model *getModel2() const;
 };
