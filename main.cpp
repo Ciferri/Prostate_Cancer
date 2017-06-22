@@ -28,7 +28,9 @@
 using namespace std;
 
 int main(int argc, char *argv[]){
-  Model *coupler, *model1, *model2;
+  Coupler *coupler;
+  ProstTissue *model1;
+  diffusion3D *model2;
   int nrow, ncol, nlayer;
   double doubTime;
   double apopDeadTime, apopProb, necDeadTime;
@@ -45,13 +47,13 @@ int main(int argc, char *argv[]){
   double DT1, DT2, simTime;
 
   if(argc != 33){
-    cout << "Incorrect number of parameters. 32 parameters expected"
-	 << endl;
-    cout << "doubTime G1Dur SDur G2Dur MDur G1Distrib SDistrib" <<
-      "G2Distrib MDistrib alphaAlive alphaTumG1 alphaTumS" <<
-      "alphaTumG2 alphaTumM alphaDead alphaVes betaAlive" <<
-      "betaTumG1 betaTumS betaTumG2 betaTumM betaDead betaVes" <<
-      "apopProb apopDeadTime necDeadTime Vmax KConso fraction" <<
+    cout << "Incorrect number of parameters. " <<
+      "32 parameters expected." << endl;
+    cout << "doubTime G1Dur SDur G2Dur MDur G1Distrib SDistrib " <<
+      "G2Distrib MDistrib alphaAlive alphaTumG1 alphaTumS " <<
+      "alphaTumG2 alphaTumM alphaDead alphaVes betaAlive " <<
+      "betaTumG1 betaTumS betaTumG2 betaTumM betaDead betaVes " <<
+      "apopProb apopDeadTime necDeadTime Vmax KConso fraction " <<
       "interval totalDose schedule" << endl;
     return EXIT_FAILURE;
     }
@@ -68,9 +70,21 @@ int main(int argc, char *argv[]){
     fTissueDim >> nlayer;
     fTissueDim.close();
     cout << "Tissue dimensions: "  << endl;
-    cout << nrow << " rows" << endl;
-    cout << ncol << " columns" << endl;
-    cout << nlayer << " layers" << endl;
+    cout << nrow << " row";
+    if(nrow > 1){
+      cout << "s";
+    }
+    cout << endl;
+    cout << ncol << " column";
+    if(ncol > 1){
+      cout << "s";
+    }
+    cout << endl;
+    cout << nlayer << " layer";
+    if(nlayer > 1){
+      cout << "s";
+    }
+    cout << endl;
     cout << "---------------------------------------------" << endl;
   }
   else{
