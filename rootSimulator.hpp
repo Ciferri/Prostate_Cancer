@@ -17,7 +17,8 @@
 class RootSimulator{
 public:
   RootSimulator();
-  RootSimulator(Model *coupler, const double DT1, const double DT2);
+  RootSimulator(Coupler *coupler, const double DT1,
+		const double DT2);
   ~RootSimulator();
   void initSim();
   void simulate(const double currentTime, const double simTime);
@@ -25,7 +26,7 @@ public:
 private:
   double m_DT1, m_DT2;
   double m_currentTime;
-  Model *m_coupler;
+  Coupler *m_coupler;
   Simulator *m_sim1, *m_sim2;
 };
 #endif

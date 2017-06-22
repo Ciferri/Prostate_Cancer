@@ -15,16 +15,14 @@ RootSimulator::RootSimulator(){
 }
 
 
-RootSimulator::RootSimulator(Model *coupler, const double DT1,
+RootSimulator::RootSimulator(Coupler *coupler, const double DT1,
 			     const double DT2){
   m_coupler = coupler;
   m_DT1 = DT1;
   m_DT2 = DT2;
   m_currentTime = 0.0;
-  m_sim1 = new Simulator(((Coupler *)m_coupler)->getModel1(), DT1,
-			 "out.dat");
-  m_sim2 = new Simulator(((Coupler *)m_coupler)->getModel2(), DT2,
-			 "out2.dat");
+  m_sim1 = new Simulator(m_coupler->getModel1(), DT1);
+  m_sim2 = new Simulator(m_coupler->getModel2(), DT2);
 }
 
 
@@ -37,15 +35,37 @@ void RootSimulator::initSim(){
 void RootSimulator::simulate(const double currentTime,
 			     const double simTime){
   int numIter;
+  ofstream fTumDens("tumDens.dat");
+  ofstream fState("state.dat");
+  ofstream fTimer("timer.dat");
+  ofstream fPO2("po2.dat");
   
   numIter = simTime / m_DT1;
   for(int j(0); j < numIter; j++){
-    m_sim2->simulate(m_currentTime, 500);
+    m_sim2->simulate(m_currentTime, 3600);
     m_coupler->updateModel();
     m_sim1->simulate(m_currentTime, m_DT1);
+    fTumDens << m_currentTime << " " << m_coupler->getModel1()
+      ->getOut()->at(0) << endl;
+    for(int i(0); i < m_coupler->getModel1()->getNumComp(); i++){
+      fState << m_coupler->getModel1()->getComp()->at(i)->getOut()
+	->at(0) << "\t";
+      fTimer << m_coupler->getModel1()->getComp()->at(i)->getParam()
+	->at(0) << "\t";
+      fPO2 << m_coupler->getModel2()->getComp()->at(i)->getOut()
+	->at(0) << "\t";
+    }
+    fState << endl;
+    fTimer << endl;
+    fPO2 << endl;
+    
     m_coupler->updateModel();
     m_currentTime += m_DT1;
   }
+  fTumDens.close();
+  fState.close();
+  fTimer.close();
+  fPO2.close();
 }
   
 void RootSimulator::stop(){
