@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
       "apopProb apopDeadTime necDeadTime Vmax KConso fraction " <<
       "interval totalDose schedule" << endl;
     return EXIT_FAILURE;
-    }
+  }
   
   
   nFTissueDim = "tissueDim.dat";
@@ -131,9 +131,10 @@ int main(int argc, char *argv[]){
   interval  = atof(argv[31]);
   schedule  = atoi(argv[32]);
   
-  treatment = new Treatment(fraction, totalDose, interval,
-			    schedule);
-  cout<<treatment<<endl;
+  /*treatment = new Treatment(fraction, totalDose, interval,
+  schedule);
+  cout<<treatment<<endl;*/
+  treatment = 0;
   
   model1 = new ProstTissue(nrow, ncol, nlayer, nFInTum, nFInVes,
 			   doubTime, cycDur, cycDistrib,
@@ -145,7 +146,8 @@ int main(int argc, char *argv[]){
   DT1 = 1; //h;
   DT2 = 1; //s;
   sim = new RootSimulator(coupler, DT1, DT2);
-  simTime = treatment->getDuration();
+  //simTime = treatment->getDuration();
+  simTime = 96;
   sim->initSim();
   sim->simulate(0.0, simTime);
   sim->stop();
