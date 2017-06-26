@@ -422,7 +422,8 @@ ProstCell *ProstCell::searchSpace() const{
   edgeSize = m_edge->size();
   m = rand() % edgeSize;
   for(int n(0); n < edgeSize; n++){
-    if(((ProstCell *)m_edge->at(m))->ST_ALIVE){
+    if(((ProstCell *)m_edge->at(m))->ST_ALIVE &&
+       !((ProstCell *)m_edge->at(m))->IN_TUM){
       return ((ProstCell *)m_edge->at(m));
     }
     m++;
